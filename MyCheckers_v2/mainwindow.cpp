@@ -10,6 +10,7 @@
 #include <QLabel>
 #include <QDebug>
 #include <QTime>
+#include <QTimer>
 #include <QMenuBar>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -17,6 +18,14 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    //设置计时器
+    myTimer = new QTimer(this);
+    enemyTimer = new QTimer(this);
+    connect(this, SIGNAL(startMyTimer()), this, SLOT(myTimerSlotStart()));
+    connect(myTimer, SIGNAL(timeout()), this, SLOT(myLCMCount()));
+    connect(this, SIGNAL(startEnemyTimer()), this, SLOT(enemyTimerSlotStart()));
+    connect(enemyTimer, SIGNAL(timeout()), this, SLOT(enemyLCMCount()));
 
     //设置MouseTracking
     connect(this, SIGNAL(mouseMove(QMouseEvent *)), this, SLOT(drawMouse(QMouseEvent *)));
@@ -70,7 +79,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent * event) {
         chessbeingmoved->x = grid_x - 0.4;
         chessbeingmoved->y = grid_y - 0.4;
     }
-    else if (num != -1) {
+    else if (num != -1 && chessesplayed[num].side == ME) {
         this->setCursor(Qt::PointingHandCursor);
     }
     else {
@@ -87,7 +96,7 @@ void MainWindow::mousePressEvent(QMouseEvent * event) {
 
     int num = mouse_on_chess(grid_x, grid_y);
 
-    if (num != -1) {
+    if (num != -1 && chessesplayed[num].side == ME) {
         this->setCursor(Qt::PointingHandCursor);
         chessbeingmoved = &chessesplayed[num];
         chessesplayed[num].beingpressed = true;
@@ -95,7 +104,10 @@ void MainWindow::mousePressEvent(QMouseEvent * event) {
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent * event) {
-    if (chessbeingmoved == nullptr) qDebug() << "mouseReleaseEvent triggered but no chess being moved!";
+    if (chessbeingmoved == nullptr) {
+        qDebug() << "mouseReleaseEvent triggered but no chess being moved!";
+        return;
+    }
 
     int screen_x = event->pos().x();
     int screen_y = event->pos().y();
@@ -104,7 +116,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event) {
 
     int num = mouse_on_chessboard(grid_x, grid_y);
 
-    if (num == -1 || chessboard[num].haschess) { //不在棋盘上或棋盘位置有棋子
+    if (num == -1 || chessboard[num].haschess || disobeyRules(chessbeingmoved->chessboardlabel , num)) { //不在棋盘上或棋盘位置有棋子
         qDebug() << "Ooops!";
         chessbeingmoved->x = chessboard[chessbeingmoved->chessboardlabel].x;
         chessbeingmoved->y = chessboard[chessbeingmoved->chessboardlabel].y;
@@ -253,43 +265,46 @@ void MainWindow::on_startButton_clicked()
     ui->loadLabel->hide();
     ui->GameInfoBox->show();
 
-    d = d * 1.1;
+    ui->lcdNumberYour->display(20);
+    ui->lcdNumberEnemy->display(20);
+    emit startMyTimer();
+
     switch(myColor) {
         case(0):
             ui->MyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("red")));
             ui->EnemyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("blue")));
-            pm_me = QPixmap("../images/red.png").scaled(d, d, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/blue.png").scaled(d, d, Qt::KeepAspectRatio);
+            pm_me = QPixmap("../images/red.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/blue.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
             break;
         case(1):
             ui->MyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("yellow")));
             ui->EnemyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("purple")));
-            pm_me = QPixmap("../images/yellow.png").scaled(d, d, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/purple.png").scaled(d, d, Qt::KeepAspectRatio);
+            pm_me = QPixmap("../images/yellow.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/purple.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
             break;
         case(2):
             ui->MyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("green")));
             ui->EnemyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("pink")));
-            pm_me = QPixmap("../images/green.png").scaled(d, d, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/pink.png").scaled(d, d, Qt::KeepAspectRatio);
+            pm_me = QPixmap("../images/green.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/pink.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
             break;
         case(3):
             ui->MyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("blue")));
             ui->EnemyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("red")));
-            pm_me = QPixmap("../images/blue.png").scaled(d, d, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/red.png").scaled(d, d, Qt::KeepAspectRatio);
+            pm_me = QPixmap("../images/blue.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/red.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
             break;
         case(4):
             ui->MyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("purple")));
             ui->EnemyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("yellow")));
-            pm_me = QPixmap("../images/purple.png").scaled(d, d, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/yellow.png").scaled(d, d, Qt::KeepAspectRatio);
+            pm_me = QPixmap("../images/purple.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/yellow.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
             break;
         case(5):
             ui->MyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("pink")));
             ui->EnemyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("green")));
-            pm_me = QPixmap("../images/pink.png").scaled(d, d, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/green.png").scaled(d, d, Qt::KeepAspectRatio);
+            pm_me = QPixmap("../images/pink.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/green.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
             break;
     }
 
@@ -366,9 +381,10 @@ void MainWindow::paintEventChessBoard(QPainter & p) {
     board_h_off = (real_h - board_h) / 2 + 2 * (ui->menubar->heightForWidth(this->width())); //最上方像素坐标
     grid_w = board_w / 13; //每一个棋子的width
     grid_h = board_h / 17; //每一个棋子的height
-    d = grid_h * 0.9; //直径
+    d_chessboard = grid_h * 0.9; //直径
+    d_chess = d_chessboard * 1.1;
     p.drawPixmap(0, 0, width(), height(), QPixmap("../images/BackgroundPlain.png")); //背景图片
-    auto pm = QPixmap("../images/white.png").scaled(d, d, Qt::KeepAspectRatio); //每一个棋子的QPixmap
+    auto pm = QPixmap("../images/white.png").scaled(d_chessboard, d_chessboard, Qt::KeepAspectRatio); //每一个棋子的QPixmap
 
     for (int i = 0; i < chessboard.size(); ++i) {
         Chess &chess = chessboard[i];
@@ -385,28 +401,28 @@ void MainWindow::paintEventChessBoard(QPainter & p) {
 void MainWindow::paintEventChessesPlayed(QPainter & p) {
     switch(myColor) {
         case(0):
-            pm_me = QPixmap("../images/red.png").scaled(d, d, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/blue.png").scaled(d, d, Qt::KeepAspectRatio);
+            pm_me = QPixmap("../images/red.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/blue.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
             break;
         case(1):
-            pm_me = QPixmap("../images/yellow.png").scaled(d, d, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/purple.png").scaled(d, d, Qt::KeepAspectRatio);
+            pm_me = QPixmap("../images/yellow.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/purple.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
             break;
         case(2):
-            pm_me = QPixmap("../images/green.png").scaled(d, d, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/pink.png").scaled(d, d, Qt::KeepAspectRatio);
+            pm_me = QPixmap("../images/green.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/pink.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
             break;
         case(3):
-            pm_me = QPixmap("../images/blue.png").scaled(d, d, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/red.png").scaled(d, d, Qt::KeepAspectRatio);
+            pm_me = QPixmap("../images/blue.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/red.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
             break;
         case(4):
-            pm_me = QPixmap("../images/purple.png").scaled(d, d, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/yellow.png").scaled(d, d, Qt::KeepAspectRatio);
+            pm_me = QPixmap("../images/purple.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/yellow.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
             break;
         case(5):
-            pm_me = QPixmap("../images/pink.png").scaled(d, d, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/green.png").scaled(d, d, Qt::KeepAspectRatio);
+            pm_me = QPixmap("../images/pink.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/green.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
             break;
     }
 
@@ -422,4 +438,60 @@ void MainWindow::paintEventChessesPlayed(QPainter & p) {
     }
     this->update();
 
+}
+
+bool MainWindow::disobeyRules(int start, int destination) {
+    //距离为1返回false
+    if ((abs(chessboard[start].x - chessboard[destination].x) <= 1) &&
+        (abs(chessboard[start].y - chessboard[destination].y) <= 1)) {
+        return false;
+    }
+//    else if {
+//        // to be continue: 可以按规则跳到返回false
+//    }
+    return true;
+}
+
+
+//轮流20秒计时器：to be continued..
+void MainWindow::myTimerSlotStart() {
+    qDebug() << "myTimerSlotStart";
+    ui->lcdNumberEnemy->display(20);
+    myTimer->start(1000);
+}
+
+void MainWindow::myLCMCount() {
+    qDebug() << "myLCMCount";
+    int nowsec = ui->lcdNumberYour->value();
+    if (nowsec != 1) {
+        nowsec--;
+        ui->lcdNumberYour->display(nowsec);
+        emit startMyTimer();
+    }
+    else {
+        ui->lcdNumberEnemy->display(20);
+        emit startEnemyTimer();
+        ui->lcdNumberYour->display(0);
+        myTimer->stop();
+    }
+}
+
+void MainWindow::enemyTimerSlotStart() {
+    ui->lcdNumberYour->display(20);
+    enemyTimer->start(1000);
+}
+
+void MainWindow::enemyLCMCount() {
+    int nowsec = ui->lcdNumberEnemy->value();
+    if (nowsec != 1) {
+        nowsec--;
+        ui->lcdNumberEnemy->display(nowsec);
+        emit startEnemyTimer();
+    }
+    else {
+        ui->lcdNumberYour->display(20);
+        emit startMyTimer();
+        ui->lcdNumberEnemy->display(0);
+        enemyTimer->stop();
+    }
 }

@@ -642,10 +642,10 @@
         "-ferror-limit=1000",
         "-x",
         "c++-header",
-        "C:\\Users\\Catherine\\Desktop\\build-MyCheckers_v2\\ui_connectserver.h"
+        "C:\\Users\\Catherine\\Desktop\\build-MyCheckers_v2\\ui_createconnection.h"
     ],
     "directory": "C:/Users/Catherine/Desktop/build-MyCheckers_v2/.qtc_clangd",
-    "file": "C:/Users/Catherine/Desktop/build-MyCheckers_v2/ui_connectserver.h"
+    "file": "C:/Users/Catherine/Desktop/build-MyCheckers_v2/ui_createconnection.h"
 },
 {
     "arguments": [
@@ -714,10 +714,10 @@
         "-ferror-limit=1000",
         "-x",
         "c++-header",
-        "C:\\Users\\Catherine\\Desktop\\build-MyCheckers_v2\\ui_createconnection.h"
+        "C:\\Users\\Catherine\\Desktop\\build-MyCheckers_v2\\ui_connectserver.h"
     ],
     "directory": "C:/Users/Catherine/Desktop/build-MyCheckers_v2/.qtc_clangd",
-    "file": "C:/Users/Catherine/Desktop/build-MyCheckers_v2/ui_createconnection.h"
+    "file": "C:/Users/Catherine/Desktop/build-MyCheckers_v2/ui_connectserver.h"
 },
 {
     "arguments": [

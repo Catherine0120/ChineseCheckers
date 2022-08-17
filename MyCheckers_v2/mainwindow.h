@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QMouseEvent>
 #include <QVector>
+#include <QTimer>
 #include "chess.h"
 
 
@@ -45,6 +46,8 @@ public:
     int mouse_on_chess(double grid_x, int grid_y);
     int mouse_on_chessboard(double grid_x, int grid_y);
 
+    bool disobeyRules(int start, int destination);
+
 private slots:
     void on_redColor_clicked();
 
@@ -70,8 +73,20 @@ private slots:
 
     void on_startButton_clicked();
 
+    void myTimerSlotStart();
+
+    void myLCMCount();
+
+    void enemyTimerSlotStart();
+
+    void enemyLCMCount();
+
 signals:
     void mouseMove(QMouseEvent *event);
+
+    void startMyTimer();
+
+    void startEnemyTimer();
 
 private:
     Ui::MainWindow *ui;
@@ -81,7 +96,8 @@ private:
 
     int board_w_off, board_h_off; //左上像素点坐标
     int grid_w, grid_h; //每一个棋子的宽和高，grid_h为棋子直径
-    double d; //棋子的直径
+    double d_chessboard; //棋盘棋坑的直径
+    double d_chess; //棋盘棋子的直径
 
     bool buttonstart = false;
     QPixmap pm_enemy, pm_me;
@@ -91,6 +107,11 @@ private:
     static constexpr int num_chesses[]= {
         1, 2, 3, 4, 13, 12, 11, 10, 9, 10, 11, 12, 13, 4, 3, 2, 1
     };
+
+    QTimer * myTimer;
+    QTimer * enemyTimer;
+
+    int MyTimerId, EnemyTimerId;
 
 };
 

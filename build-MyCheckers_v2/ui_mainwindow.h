@@ -54,7 +54,7 @@ public:
     QLabel *MyBall;
     QLabel *EnemyBall;
     QLabel *loadLabel;
-    QWidget *widget;
+    QWidget *layoutWidget;
     QVBoxLayout *LeftBottomLayout;
     QPushButton *helpButton;
     QPushButton *scoreButton;
@@ -211,13 +211,13 @@ public:
         loadLabel->setFont(font2);
         loadLabel->setStyleSheet(QString::fromUtf8("color: white"));
         loadLabel->setAlignment(Qt::AlignCenter);
-        widget = new QWidget(centralwidget);
-        widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(50, 490, 111, 171));
-        LeftBottomLayout = new QVBoxLayout(widget);
+        layoutWidget = new QWidget(centralwidget);
+        layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
+        layoutWidget->setGeometry(QRect(50, 490, 111, 171));
+        LeftBottomLayout = new QVBoxLayout(layoutWidget);
         LeftBottomLayout->setObjectName(QString::fromUtf8("LeftBottomLayout"));
         LeftBottomLayout->setContentsMargins(0, 0, 0, 0);
-        helpButton = new QPushButton(widget);
+        helpButton = new QPushButton(layoutWidget);
         helpButton->setObjectName(QString::fromUtf8("helpButton"));
         helpButton->setFont(font2);
         helpButton->setCursor(QCursor(Qt::PointingHandCursor));
@@ -226,7 +226,7 @@ public:
 
         LeftBottomLayout->addWidget(helpButton);
 
-        scoreButton = new QPushButton(widget);
+        scoreButton = new QPushButton(layoutWidget);
         scoreButton->setObjectName(QString::fromUtf8("scoreButton"));
         scoreButton->setFont(font2);
         scoreButton->setCursor(QCursor(Qt::PointingHandCursor));
@@ -235,7 +235,7 @@ public:
 
         LeftBottomLayout->addWidget(scoreButton);
 
-        quitButton = new QPushButton(widget);
+        quitButton = new QPushButton(layoutWidget);
         quitButton->setObjectName(QString::fromUtf8("quitButton"));
         quitButton->setFont(font2);
         quitButton->setCursor(QCursor(Qt::PointingHandCursor));
