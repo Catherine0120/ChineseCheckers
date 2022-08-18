@@ -59,6 +59,8 @@ public:
     QPushButton *helpButton;
     QPushButton *scoreButton;
     QPushButton *quitButton;
+    QGroupBox *roundCountBox;
+    QLCDNumber *lcdRoundNumber;
     QMenuBar *menubar;
     QMenu *menuConnect;
     QMenu *menuPlay;
@@ -149,7 +151,7 @@ public:
 
         coordinateLabel = new QLabel(centralwidget);
         coordinateLabel->setObjectName(QString::fromUtf8("coordinateLabel"));
-        coordinateLabel->setGeometry(QRect(220, 490, 141, 71));
+        coordinateLabel->setGeometry(QRect(230, 590, 141, 61));
         QFont font2;
         font2.setPointSize(15);
         coordinateLabel->setFont(font2);
@@ -244,6 +246,19 @@ public:
 
         LeftBottomLayout->addWidget(quitButton);
 
+        roundCountBox = new QGroupBox(centralwidget);
+        roundCountBox->setObjectName(QString::fromUtf8("roundCountBox"));
+        roundCountBox->setGeometry(QRect(240, 470, 121, 101));
+        QFont font6;
+        font6.setFamilies({QString::fromUtf8("Times New Roman")});
+        font6.setPointSize(20);
+        font6.setItalic(true);
+        roundCountBox->setFont(font6);
+        roundCountBox->setStyleSheet(QString::fromUtf8("color:white;"));
+        lcdRoundNumber = new QLCDNumber(roundCountBox);
+        lcdRoundNumber->setObjectName(QString::fromUtf8("lcdRoundNumber"));
+        lcdRoundNumber->setGeometry(QRect(10, 30, 101, 61));
+        lcdRoundNumber->setLayoutDirection(Qt::LeftToRight);
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -268,6 +283,7 @@ public:
 
         retranslateUi(MainWindow);
         QObject::connect(selectButton, &QPushButton::clicked, ColorBox, qOverload<>(&QGroupBox::show));
+        QObject::connect(quitButton, &QPushButton::clicked, MainWindow, qOverload<>(&QMainWindow::close));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -299,6 +315,7 @@ public:
         helpButton->setText(QCoreApplication::translate("MainWindow", "Help", nullptr));
         scoreButton->setText(QCoreApplication::translate("MainWindow", "Score", nullptr));
         quitButton->setText(QCoreApplication::translate("MainWindow", "Quit", nullptr));
+        roundCountBox->setTitle(QCoreApplication::translate("MainWindow", "Round:", nullptr));
         menuConnect->setTitle(QCoreApplication::translate("MainWindow", "Connect", nullptr));
         menuPlay->setTitle(QCoreApplication::translate("MainWindow", "Play", nullptr));
     } // retranslateUi

@@ -9,23 +9,32 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    admitdefeatdialog.cpp \
     connectserver.cpp \
     createconnection.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    playdialog.cpp
 
 HEADERS += \
+    admitdefeatdialog.h \
     chess.h \
     connectserver.h \
     createconnection.h \
-    mainwindow.h
+    mainwindow.h \
+    playdialog.h
 
 FORMS += \
+    admitdefeatdialog.ui \
     connectserver.ui \
     createconnection.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    playdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    ReadMe.txt

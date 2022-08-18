@@ -1,0 +1,11 @@
+debug/admitdefeatdialog.o
+debug/connectserver.o
+debug/createconnection.o
+debug/main.o
+debug/mainwindow.o
+debug/playdialog.o
+debug/moc_admitdefeatdialog.o
+debug/moc_connectserver.o
+debug/moc_createconnection.o
+debug/moc_mainwindow.o
+debug/moc_playdialog.o

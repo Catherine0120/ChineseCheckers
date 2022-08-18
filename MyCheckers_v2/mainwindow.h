@@ -71,15 +71,25 @@ private slots:
 
     void on_open_connect_server();
 
+    void on_open_admit_defeat_action();
+
+    void on_open_start_action();
+
     void on_startButton_clicked();
 
     void myTimerSlotStart();
 
-    void myLCMCount();
+    void myLCDCount();
 
     void enemyTimerSlotStart();
 
-    void enemyLCMCount();
+    void enemyLCDCount();
+
+    void roundLCDIncrease();
+
+    void myLCDend();
+
+    void enemyLCDend();
 
 signals:
     void mouseMove(QMouseEvent *event);
@@ -87,6 +97,12 @@ signals:
     void startMyTimer();
 
     void startEnemyTimer();
+
+    void increaseRoundNumber();
+
+    void endMyRound();
+
+    void endEnemyRound();
 
 private:
     Ui::MainWindow *ui;
@@ -112,6 +128,8 @@ private:
     QTimer * enemyTimer;
 
     int MyTimerId, EnemyTimerId;
+
+    int chessselected = -1;
 
 };
 

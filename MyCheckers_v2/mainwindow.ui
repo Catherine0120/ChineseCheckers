@@ -163,10 +163,10 @@ border:2px solid white;</string>
    <widget class="QLabel" name="coordinateLabel">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>490</y>
+      <x>230</x>
+      <y>590</y>
       <width>141</width>
-      <height>71</height>
+      <height>61</height>
      </rect>
     </property>
     <property name="font">
@@ -422,6 +422,42 @@ color:rgb(0, 0, 0);</string>
      </item>
     </layout>
    </widget>
+   <widget class="QGroupBox" name="roundCountBox">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>470</y>
+      <width>121</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Times New Roman</family>
+      <pointsize>20</pointsize>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color:white;</string>
+    </property>
+    <property name="title">
+     <string>Round:</string>
+    </property>
+    <widget class="QLCDNumber" name="lcdRoundNumber">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>101</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -492,6 +528,22 @@ color:rgb(0, 0, 0);</string>
     <hint type="destinationlabel">
      <x>195</x>
      <y>202</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>quitButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>105</x>
+     <y>640</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>337</x>
+     <y>357</y>
     </hint>
    </hints>
   </connection>

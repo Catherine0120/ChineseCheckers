@@ -1,0 +1,11 @@
+release/admitdefeatdialog.o
+release/connectserver.o
+release/createconnection.o
+release/main.o
+release/mainwindow.o
+release/playdialog.o
+release/moc_admitdefeatdialog.o
+release/moc_connectserver.o
+release/moc_createconnection.o
+release/moc_mainwindow.o
+release/moc_playdialog.o

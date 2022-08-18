@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "createconnection.h"
 #include "connectserver.h"
+#include "playdialog.h"
+#include "admitdefeatdialog.h"
 #include <algorithm>
 #include <QPainter>
 #include <QPixmap>
@@ -23,9 +25,13 @@ MainWindow::MainWindow(QWidget *parent)
     myTimer = new QTimer(this);
     enemyTimer = new QTimer(this);
     connect(this, SIGNAL(startMyTimer()), this, SLOT(myTimerSlotStart()));
-    connect(myTimer, SIGNAL(timeout()), this, SLOT(myLCMCount()));
+    connect(myTimer, SIGNAL(timeout()), this, SLOT(myLCDCount()));
     connect(this, SIGNAL(startEnemyTimer()), this, SLOT(enemyTimerSlotStart()));
-    connect(enemyTimer, SIGNAL(timeout()), this, SLOT(enemyLCMCount()));
+    connect(enemyTimer, SIGNAL(timeout()), this, SLOT(enemyLCDCount()));
+
+    connect(this, SIGNAL(increaseRoundNumber()), this, SLOT(roundLCDIncrease()));
+    connect(this, SIGNAL(endMyRound()), this, SLOT(myLCDend()));
+    connect(this, SIGNAL(endEnemyRound()), this, SLOT(enemyLCDend()));
 
     //设置MouseTracking
     connect(this, SIGNAL(mouseMove(QMouseEvent *)), this, SLOT(drawMouse(QMouseEvent *)));
@@ -35,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent)
     //菜单栏信号与槽
     connect(ui->actionCreate_the_connection, SIGNAL(triggered()), this, SLOT(on_open_start_collection()));
     connect(ui->actionConnect_to_Server, SIGNAL(triggered()), this, SLOT(on_open_connect_server()));
+    connect(ui->actionStart, SIGNAL(triggered()), this, SLOT(on_open_start_action()));
+    connect(ui->actionAdmit_defeat, SIGNAL(triggered()), this, SLOT(on_open_admit_defeat_action()));
 
     ui->ballImage->hide();
     ui->ColorBox->setStyleSheet("QGroupBox{border:none}");
@@ -42,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->startButton->hide();
     ui->GameInfoBox->hide();
     ui->loadLabel->hide();
+    ui->roundCountBox->hide();
 
     for (size_t i = 0; i < sizeof(num_chesses) / sizeof(int); ++i) {
         double start = -(num_chesses[i] - 1) / 2.0;
@@ -79,7 +88,17 @@ void MainWindow::mouseMoveEvent(QMouseEvent * event) {
         chessbeingmoved->x = grid_x - 0.4;
         chessbeingmoved->y = grid_y - 0.4;
     }
-    else if (num != -1 && chessesplayed[num].side == ME) {
+    else if (num != -1 && chessesplayed[num].side == ME
+             && (chessselected == num || chessselected == -1)
+             && ui->lcdNumberYour->value() > 0) {
+        this->setCursor(Qt::PointingHandCursor);
+    }
+    else if(num == -1 || chessesplayed[num].side == ME) {
+        this->setCursor(Qt::ArrowCursor);
+    }
+    else if (num != -1 && chessesplayed[num].side == ENEMY
+             && (chessselected == num || chessselected == -1)
+             && ui->lcdNumberEnemy->value() > 0) {
         this->setCursor(Qt::PointingHandCursor);
     }
     else {
@@ -96,11 +115,23 @@ void MainWindow::mousePressEvent(QMouseEvent * event) {
 
     int num = mouse_on_chess(grid_x, grid_y);
 
-    if (num != -1 && chessesplayed[num].side == ME) {
+    //我的回合
+    if (num != -1 && chessesplayed[num].side == ME
+            && (chessselected == num || chessselected == -1)
+            && ui->lcdNumberYour->value() > 0) {
         this->setCursor(Qt::PointingHandCursor);
+        chessselected = num;
         chessbeingmoved = &chessesplayed[num];
         chessesplayed[num].beingpressed = true;
     }
+    else if (num != -1 && chessesplayed[num].side == ENEMY
+             && (chessselected == num || chessselected == -1)
+             && ui->lcdNumberEnemy->value() > 0) {
+         this->setCursor(Qt::PointingHandCursor);
+         chessselected = num;
+         chessbeingmoved = &chessesplayed[num];
+         chessesplayed[num].beingpressed = true;
+     }
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent * event) {
@@ -117,7 +148,6 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event) {
     int num = mouse_on_chessboard(grid_x, grid_y);
 
     if (num == -1 || chessboard[num].haschess || disobeyRules(chessbeingmoved->chessboardlabel , num)) { //不在棋盘上或棋盘位置有棋子
-        qDebug() << "Ooops!";
         chessbeingmoved->x = chessboard[chessbeingmoved->chessboardlabel].x;
         chessbeingmoved->y = chessboard[chessbeingmoved->chessboardlabel].y;
         chessbeingmoved->beingpressed = false;
@@ -131,6 +161,9 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event) {
         chessbeingmoved->x = chessboard[num].x;
         chessbeingmoved->y = chessboard[num].y;
         chessboard[num].haschess = true;
+        chessselected = -1;
+        if (chessbeingmoved->side == ME) emit endMyRound();
+        if (chessbeingmoved->side == ENEMY) emit endEnemyRound();
         chessbeingmoved = nullptr;
     }
 }
@@ -243,6 +276,18 @@ void MainWindow::on_open_connect_server() {
     p->show();
 }
 
+void MainWindow::on_open_start_action() {
+    PlayDialog *p = new PlayDialog();
+    p->setWindowModality(Qt::ApplicationModal);
+    p->show();
+}
+
+void MainWindow::on_open_admit_defeat_action() {
+    AdmitDefeatDialog *p = new AdmitDefeatDialog();
+    p->setWindowModality(Qt::ApplicationModal);
+    p->show();
+}
+
 void MainWindow::on_startButton_clicked()
 {
     buttonstart = true;
@@ -264,9 +309,12 @@ void MainWindow::on_startButton_clicked()
 
     ui->loadLabel->hide();
     ui->GameInfoBox->show();
+    ui->roundCountBox->show();
+    ui->lcdRoundNumber->display(1);
+    ui->lcdRoundNumber->show();
 
     ui->lcdNumberYour->display(20);
-    ui->lcdNumberEnemy->display(20);
+    ui->lcdNumberEnemy->display(0);
     emit startMyTimer();
 
     switch(myColor) {
@@ -455,13 +503,10 @@ bool MainWindow::disobeyRules(int start, int destination) {
 
 //轮流20秒计时器：to be continued..
 void MainWindow::myTimerSlotStart() {
-    qDebug() << "myTimerSlotStart";
-    ui->lcdNumberEnemy->display(20);
     myTimer->start(1000);
 }
 
-void MainWindow::myLCMCount() {
-    qDebug() << "myLCMCount";
+void MainWindow::myLCDCount() {
     int nowsec = ui->lcdNumberYour->value();
     if (nowsec != 1) {
         nowsec--;
@@ -469,6 +514,7 @@ void MainWindow::myLCMCount() {
         emit startMyTimer();
     }
     else {
+        chessselected = -1;
         ui->lcdNumberEnemy->display(20);
         emit startEnemyTimer();
         ui->lcdNumberYour->display(0);
@@ -477,11 +523,10 @@ void MainWindow::myLCMCount() {
 }
 
 void MainWindow::enemyTimerSlotStart() {
-    ui->lcdNumberYour->display(20);
     enemyTimer->start(1000);
 }
 
-void MainWindow::enemyLCMCount() {
+void MainWindow::enemyLCDCount() {
     int nowsec = ui->lcdNumberEnemy->value();
     if (nowsec != 1) {
         nowsec--;
@@ -489,9 +534,34 @@ void MainWindow::enemyLCMCount() {
         emit startEnemyTimer();
     }
     else {
+        emit increaseRoundNumber();
+        chessselected = -1;
         ui->lcdNumberYour->display(20);
         emit startMyTimer();
         ui->lcdNumberEnemy->display(0);
         enemyTimer->stop();
     }
+}
+
+void MainWindow::roundLCDIncrease() {
+    int getNum = ui->lcdRoundNumber->value();
+    getNum++;
+    ui->lcdRoundNumber->display(getNum);
+}
+
+void MainWindow::myLCDend() {
+    ui->lcdNumberYour->display(0);
+    myTimer->stop();
+    chessselected = -1;
+    ui->lcdNumberEnemy->display(20);
+    emit startEnemyTimer();
+}
+
+void MainWindow::enemyLCDend() {
+    ui->lcdNumberEnemy->display(0);
+    enemyTimer->stop();
+    chessselected = -1;
+    ui->lcdNumberYour->display(20);
+    emit increaseRoundNumber();
+    emit startMyTimer();
 }
