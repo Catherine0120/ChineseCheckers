@@ -20,12 +20,20 @@
 #include <vector>
 #include <assert.h>
 #include <queue>
+#include <QMessageBox>
+#include <QProcess>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    pD = new AdmitDefeatDialog(this);
+    pS = new PlayDialog(this);
+    pE = new EnemyWinDialog(this);
+    pM = new MeWinDialog(this);
+
+    ui->lcdRoundNumber->display(1);
 
     //设置计时器
     myTimer = new QTimer(this);
@@ -53,6 +61,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionConnect_to_Server, SIGNAL(triggered()), this, SLOT(on_open_connect_server()));
     connect(ui->actionStart, SIGNAL(triggered()), this, SLOT(on_open_start_action()));
     connect(ui->actionAdmit_defeat, SIGNAL(triggered()), this, SLOT(on_open_admit_defeat_action()));
+
+    connect(pD, SIGNAL(switchFlag()), this, SLOT(judge_admit_defeat()));
+    connect(pS, SIGNAL(start_new_game()), this, SLOT(start_new_page()));
+    connect(pE, SIGNAL(tryagain()), this, SLOT(start_new_page()));
+    connect(pM, SIGNAL(winagain()), this, SLOT(start_new_page()));
 
     ui->ballImage->hide();
     ui->ColorBox->setStyleSheet("QGroupBox{border:none}");
@@ -154,6 +167,7 @@ void MainWindow::paintEventChessesPlayed(QPainter & p) {
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent * event) {
+//    qDebug() << "mouseMoveEvent";
     emit mouseMove(event);
 
     int screen_x = event->pos().x();
@@ -187,6 +201,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent * event) {
 }
 
 void MainWindow::mousePressEvent(QMouseEvent * event) {
+    qDebug() << "mousePressEvent";
     int screen_x = event->pos().x();
     int screen_y = event->pos().y();
     double grid_x = get_grid_x(screen_x);
@@ -214,6 +229,8 @@ void MainWindow::mousePressEvent(QMouseEvent * event) {
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent * event) {
+    qDebug() << "mouseReleaseEvent";
+
     if (chessbeingmoved == nullptr) {
 //        qDebug() << "mouseReleaseEvent triggered but no chess being moved!";
         return;
@@ -228,9 +245,8 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event) {
 
     assert(num >= -1 && num <= 120);
     assert(chessbeingmoved->chessboardlabel != -1);
-    if (num == -1 || chessboard[num].haschess// || disobeyRules(chessbeingmoved->chessboardlabel, num)
-            ) {
-        qDebug() << "[wrong]: " << bool(num == -1) << " " << bool(chessboard[num].haschess) << " " << bool(disobeyRules(chessbeingmoved->chessboardlabel, num));
+    if (num == -1 || chessboard[num].haschess || disobeyRules(chessbeingmoved->chessboardlabel, num)) {
+//        qDebug() << "[wrong]: " << bool(num == -1) << " " << bool(chessboard[num].haschess) << " " << bool(disobeyRules(chessbeingmoved->chessboardlabel, num));
         chessbeingmoved->x = chessboard[chessbeingmoved->chessboardlabel].x;
         chessbeingmoved->y = chessboard[chessbeingmoved->chessboardlabel].y;
         chessselected = -1;
@@ -252,8 +268,8 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event) {
         chessbeingmoved = nullptr;
     }
 
-    if (countMyChessEnemyCamp()) emit EnemyWin();
-    if (countEnemyChessMyCamp()) emit MeWin();
+    if (countMyChessEnemyCamp()) emit MeWin();
+    if (countEnemyChessMyCamp()) emit EnemyWin();
 }
 
 
@@ -369,17 +385,28 @@ void MainWindow::on_open_connect_server() {
 }
 
 void MainWindow::on_open_start_action() {
-    PlayDialog *p = new PlayDialog();
-    p->setWindowModality(Qt::ApplicationModal);
-    p->show();
+    pS->show();
+}
+
+void MainWindow::start_new_page() {
+    QApplication::closeAllWindows();
+    QProcess::startDetached(QApplication::applicationFilePath(), QStringList());
 }
 
 void MainWindow::on_open_admit_defeat_action() {
-    AdmitDefeatDialog *p = new AdmitDefeatDialog();
-    p->setWindowModality(Qt::ApplicationModal);
-    p->show();
+    pD->show();
 }
 
+void MainWindow::judge_admit_defeat() {
+    if ((int)(ui->lcdRoundNumber->value()) < 20) {
+        QMessageBox::warning(this, tr("Warning"), tr("You can only admit defeat after at least 20 rounds"),
+                             QMessageBox::Ok, QMessageBox::Ok);
+    }
+    else {
+        pD->close();
+        emit EnemyWin();
+    }
+}
 
 //StartButton:
 void MainWindow::on_startButton_clicked()
@@ -404,7 +431,6 @@ void MainWindow::on_startButton_clicked()
     ui->loadLabel->hide();
     ui->GameInfoBox->show();
     ui->roundCountBox->show();
-    ui->lcdRoundNumber->display(1);
     ui->lcdRoundNumber->show();
 
     ui->lcdNumberYour->display(20);
@@ -555,6 +581,7 @@ int MainWindow::countEnemyChessEnemyCamp() {
 
 //Judge: obey or disobey Rules? To be continued..
 bool MainWindow::disobeyRules(int start, int destination) {
+    qDebug() << "disobeyRules";
     //距离为1返回false
     if ((abs(chessboard[start].x - chessboard[destination].x) <= 1) &&
         (abs(chessboard[start].y - chessboard[destination].y) <= 1)) {
@@ -571,6 +598,7 @@ bool MainWindow::disobeyRules(int start, int destination) {
 
 //传入一个start位置，返回所有能通过若干步跳到的位置(包括起点位置)
 std::vector<int> MainWindow::get_feasible_set(int start) {
+    qDebug() << "get_feasible_set";
     std::vector<int> final_feasible_set;
     for (int i = 0; i < chessboard.size(); ++i) {
         chessboard[i].feasibility = false;
@@ -586,14 +614,15 @@ std::vector<int> MainWindow::get_feasible_set(int start) {
 
 //bfs
 void MainWindow::bfs(int pos) {
+    qDebug() << "bfs";
     std::queue<int> q;
     q.push(pos);
     while (q.size()) {
         int t = q.front();
         std::vector<int> pos_feasible_set = prepare_bfs_function(t);
-        qDebug() << "pos = " << t << ": ----------";
-        for (size_t i = 0; i < pos_feasible_set.size(); ++i) qDebug() << pos_feasible_set[i];
-        qDebug() << "---------";
+//        qDebug() << "pos = " << t << ": ----------";
+//        for (size_t i = 0; i < pos_feasible_set.size(); ++i) qDebug() << pos_feasible_set[i];
+//        qDebug() << "---------";
         q.pop();
         if (pos_feasible_set.size() == 0) continue;
         for (size_t i = 0; i < pos_feasible_set.size(); ++i) {
@@ -608,6 +637,7 @@ void MainWindow::bfs(int pos) {
 
 //传入一个start位置，返回所有能通过一步跳到的位置
 std::vector<int> MainWindow::prepare_bfs_function(int start) {
+    qDebug() << "prepare_bfs_function";
     std::vector<int> feasible_set;
     double pos_x = chessboard[start].x;
     double pos_y = chessboard[start].y;
@@ -670,7 +700,6 @@ void MainWindow::myLCDCount() {
         emit startMyTimer();
     }
     else {
-        if ((int)(ui->lcdRoundNumber->value()) == 20) qDebug() << "20";
         if ((int)(ui->lcdRoundNumber->value()) == 20
             && countMyChessMyCamp() > 5) {
             emit EnemyWin();

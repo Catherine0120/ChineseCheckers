@@ -57,30 +57,14 @@
  <resources/>
  <connections>
   <connection>
-   <sender>QuitButton</sender>
+   <sender>quitButton</sender>
    <signal>clicked()</signal>
    <receiver>MeWinDialog</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>460</x>
-     <y>465</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>149</x>
-     <y>109</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>TryAgainButton</sender>
-   <signal>clicked()</signal>
-   <receiver>MeWinDialog</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>338</x>
-     <y>465</y>
+     <x>218</x>
+     <y>163</y>
     </hint>
     <hint type="destinationlabel">
      <x>149</x>

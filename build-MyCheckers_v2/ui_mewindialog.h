@@ -65,6 +65,7 @@ public:
 
 
         retranslateUi(MeWinDialog);
+        QObject::connect(quitButton, &QPushButton::clicked, MeWinDialog, qOverload<>(&QDialog::close));
 
         QMetaObject::connectSlotsByName(MeWinDialog);
     } // setupUi

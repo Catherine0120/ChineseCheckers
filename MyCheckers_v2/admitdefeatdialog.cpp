@@ -1,7 +1,8 @@
 #include "admitdefeatdialog.h"
 #include "ui_admitdefeatdialog.h"
+#include <QDebug>
 
-AdmitDefeatDialog::AdmitDefeatDialog(QWidget *parent) :
+AdmitDefeatDialog::AdmitDefeatDialog(QMainWindow *parent) :
     QDialog(parent),
     ui(new Ui::AdmitDefeatDialog)
 {
@@ -14,3 +15,11 @@ AdmitDefeatDialog::~AdmitDefeatDialog()
 {
     delete ui;
 }
+
+
+void AdmitDefeatDialog::on_yesButton_clicked()
+{
+    qDebug() << "admit defeat!";
+    emit switchFlag();
+}
+

@@ -1,7 +1,7 @@
 #include "mewindialog.h"
 #include "ui_mewindialog.h"
 
-MeWinDialog::MeWinDialog(QWidget *parent) :
+MeWinDialog::MeWinDialog(QMainWindow *parent) :
     QDialog(parent),
     ui(new Ui::MeWinDialog)
 {
@@ -14,3 +14,9 @@ MeWinDialog::~MeWinDialog()
 {
     delete ui;
 }
+
+void MeWinDialog::on_playAgainButton_clicked()
+{
+    emit winagain();
+}
+

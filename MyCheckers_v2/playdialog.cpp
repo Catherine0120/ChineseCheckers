@@ -1,7 +1,7 @@
 #include "playdialog.h"
 #include "ui_playdialog.h"
 
-PlayDialog::PlayDialog(QWidget *parent) :
+PlayDialog::PlayDialog(QMainWindow *parent) :
     QDialog(parent),
     ui(new Ui::PlayDialog)
 {
@@ -14,3 +14,9 @@ PlayDialog::~PlayDialog()
 {
     delete ui;
 }
+
+void PlayDialog::on_yesButton_clicked()
+{
+    emit start_new_game();
+}
+

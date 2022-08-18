@@ -12,6 +12,8 @@
 #include "chess.h"
 #include "enemywindialog.h"
 #include "mewindialog.h"
+#include "admitdefeatdialog.h"
+#include "playdialog.h"
 
 
 enum color_set {RED = 0, YELLOW = 1, GREEN = 2, BLUE = 3, PURPLE = 4, PINK = 5};
@@ -85,7 +87,11 @@ private slots:
 
     void on_open_connect_server();
 
+    void start_new_page();
+
     void on_open_admit_defeat_action();
+
+    void judge_admit_defeat();
 
     void on_open_start_action();
 
@@ -150,8 +156,10 @@ private:
     QTimer * myTimer;
     QTimer * enemyTimer;
 
-    EnemyWinDialog * pE = new EnemyWinDialog();
-    MeWinDialog * pM = new MeWinDialog();
+    EnemyWinDialog * pE;
+    MeWinDialog * pM;
+    AdmitDefeatDialog * pD;
+    PlayDialog * pS;
 
 };
 
