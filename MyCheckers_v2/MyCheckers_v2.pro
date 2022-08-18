@@ -12,8 +12,10 @@ SOURCES += \
     admitdefeatdialog.cpp \
     connectserver.cpp \
     createconnection.cpp \
+    enemywindialog.cpp \
     main.cpp \
     mainwindow.cpp \
+    mewindialog.cpp \
     playdialog.cpp
 
 HEADERS += \
@@ -21,14 +23,18 @@ HEADERS += \
     chess.h \
     connectserver.h \
     createconnection.h \
+    enemywindialog.h \
     mainwindow.h \
+    mewindialog.h \
     playdialog.h
 
 FORMS += \
     admitdefeatdialog.ui \
     connectserver.ui \
     createconnection.ui \
+    enemywindialog.ui \
     mainwindow.ui \
+    mewindialog.ui \
     playdialog.ui
 
 # Default rules for deployment.

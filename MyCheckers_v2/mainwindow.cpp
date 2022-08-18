@@ -4,6 +4,8 @@
 #include "connectserver.h"
 #include "playdialog.h"
 #include "admitdefeatdialog.h"
+#include "enemywindialog.h"
+#include "mewindialog.h"
 
 #include <algorithm>
 #include <QPainter>
@@ -36,6 +38,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, SIGNAL(increaseRoundNumber()), this, SLOT(roundLCDIncrease()));
     connect(this, SIGNAL(endMyRound()), this, SLOT(myLCDend()));
     connect(this, SIGNAL(endEnemyRound()), this, SLOT(enemyLCDend()));
+
+    //判断回合走棋规则
+    connect(this, SIGNAL(EnemyWin()), this, SLOT(displayEnemyWin()));
+    connect(this, SIGNAL(MeWin()), this, SLOT(displayMeWin()));
 
     //设置MouseTracking
     connect(this, SIGNAL(mouseMove(QMouseEvent *)), this, SLOT(drawMouse(QMouseEvent *)));
@@ -220,10 +226,14 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event) {
 
     int num = mouse_on_chessboard(grid_x, grid_y);
 
-    if (num == -1 || chessboard[num].haschess || disobeyRules(chessbeingmoved->chessboardlabel, num)) {
+    assert(num >= -1 && num <= 120);
+    assert(chessbeingmoved->chessboardlabel != -1);
+    if (num == -1 || chessboard[num].haschess// || disobeyRules(chessbeingmoved->chessboardlabel, num)
+            ) {
         qDebug() << "[wrong]: " << bool(num == -1) << " " << bool(chessboard[num].haschess) << " " << bool(disobeyRules(chessbeingmoved->chessboardlabel, num));
         chessbeingmoved->x = chessboard[chessbeingmoved->chessboardlabel].x;
         chessbeingmoved->y = chessboard[chessbeingmoved->chessboardlabel].y;
+        chessselected = -1;
         chessbeingmoved->beingpressed = false;
         chessbeingmoved = nullptr;
     }
@@ -235,11 +245,15 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event) {
         chessbeingmoved->x = chessboard[num].x;
         chessbeingmoved->y = chessboard[num].y;
         chessboard[num].haschess = true;
+        chessboard[num].chesslabel = chessbeingmoved->chesslabel;
         chessselected = -1;
         if (chessbeingmoved->side == ME) emit endMyRound();
         if (chessbeingmoved->side == ENEMY) emit endEnemyRound();
         chessbeingmoved = nullptr;
     }
+
+    if (countMyChessEnemyCamp()) emit EnemyWin();
+    if (countEnemyChessMyCamp()) emit MeWin();
 }
 
 
@@ -520,6 +534,24 @@ int MainWindow::pos_on_chessboard(double grid_x, int grid_y) {
     return -1;
 }
 
+int MainWindow::countMyChessMyCamp() {
+    int cnt = 0;
+    for (int i = 111; i < chessboard.size(); ++i) {
+        if (chessboard[i].chesslabel != -1 && chessesplayed[chessboard[i].chesslabel].side == ME)
+            cnt++;
+    }
+    return cnt;
+}
+
+int MainWindow::countEnemyChessEnemyCamp() {
+    int cnt = 0;
+    for (int i = 0; i < 10; ++i) {
+        if (chessboard[i].chesslabel != -1 && chessesplayed[chessboard[i].chesslabel].side == ENEMY)
+            cnt++;
+    }
+    return cnt;
+}
+
 
 //Judge: obey or disobey Rules? To be continued..
 bool MainWindow::disobeyRules(int start, int destination) {
@@ -566,6 +598,7 @@ void MainWindow::bfs(int pos) {
         if (pos_feasible_set.size() == 0) continue;
         for (size_t i = 0; i < pos_feasible_set.size(); ++i) {
             int new_pos = pos_feasible_set[i];
+            assert(new_pos >= 0 && new_pos <= 120);
             if (chessboard[new_pos].feasibility == true) continue;
             chessboard[new_pos].feasibility = true;
             q.push(new_pos);
@@ -637,6 +670,22 @@ void MainWindow::myLCDCount() {
         emit startMyTimer();
     }
     else {
+        if ((int)(ui->lcdRoundNumber->value()) == 20) qDebug() << "20";
+        if ((int)(ui->lcdRoundNumber->value()) == 20
+            && countMyChessMyCamp() > 5) {
+            emit EnemyWin();
+            return;
+        }
+        if ((int)(ui->lcdRoundNumber->value()) == 25
+            && countMyChessMyCamp() > 2) {
+            emit EnemyWin();
+            return;
+        }
+        if ((int)(ui->lcdRoundNumber->value()) == 30
+            && countMyChessMyCamp() != 0) {
+            emit EnemyWin();
+            return;
+        }
         chessselected = -1;
         ui->lcdNumberEnemy->display(20);
         emit startEnemyTimer();
@@ -657,6 +706,21 @@ void MainWindow::enemyLCDCount() {
         emit startEnemyTimer();
     }
     else {
+        if ((int)(ui->lcdRoundNumber->value()) == 20
+            && countEnemyChessEnemyCamp() > 5) {
+            emit MeWin();
+            return;
+        }
+        if ((int)(ui->lcdRoundNumber->value()) == 25
+            && countEnemyChessEnemyCamp() > 2) {
+            emit MeWin();
+            return;
+        }
+        if ((int)(ui->lcdRoundNumber->value()) == 30
+            && countEnemyChessEnemyCamp() != 0) {
+            emit MeWin();
+            return;
+        }
         emit increaseRoundNumber();
         chessselected = -1;
         ui->lcdNumberYour->display(20);
@@ -673,6 +737,21 @@ void MainWindow::roundLCDIncrease() {
 }
 
 void MainWindow::myLCDend() {
+    if ((int)(ui->lcdRoundNumber->value()) == 20
+        && countMyChessMyCamp() > 5) {
+        emit EnemyWin();
+        return;
+    }
+    if ((int)(ui->lcdRoundNumber->value()) == 25
+        && countMyChessMyCamp() > 2) {
+        emit EnemyWin();
+        return;
+    }
+    if ((int)(ui->lcdRoundNumber->value()) == 30
+        && countMyChessMyCamp() != 0) {
+        emit EnemyWin();
+        return;
+    }
     ui->lcdNumberYour->display(0);
     myTimer->stop();
     chessselected = -1;
@@ -681,10 +760,61 @@ void MainWindow::myLCDend() {
 }
 
 void MainWindow::enemyLCDend() {
+    if ((int)(ui->lcdRoundNumber->value()) == 20
+        && countEnemyChessEnemyCamp() > 5) {
+        emit MeWin();
+        return;
+    }
+    if ((int)(ui->lcdRoundNumber->value()) == 25
+        && countEnemyChessEnemyCamp() > 2) {
+        emit MeWin();
+        return;
+    }
+    if ((int)(ui->lcdRoundNumber->value()) == 30
+        && countEnemyChessEnemyCamp() != 0) {
+        emit MeWin();
+        return;
+    }
     ui->lcdNumberEnemy->display(0);
     enemyTimer->stop();
     chessselected = -1;
     ui->lcdNumberYour->display(20);
     emit increaseRoundNumber();
     emit startMyTimer();
+}
+
+
+//Win or Lose
+void MainWindow::displayEnemyWin() {
+    pE->setWindowModality(Qt::ApplicationModal);
+    pE->show();
+    myTimer->stop();
+    enemyTimer->stop();
+    chessselected = -1;
+}
+
+void MainWindow::displayMeWin() {
+    pM->setWindowModality(Qt::ApplicationModal);
+    pM->show();
+    myTimer->stop();
+    enemyTimer->stop();
+    chessselected = -1;
+}
+
+bool MainWindow::countMyChessEnemyCamp() {
+    for (int i = 0; i < 10; ++i) {
+        assert(chessboard[i].chesslabel >= -1 && chessboard[i].chesslabel <= 19);
+        if (chessboard[i].chesslabel == -1 || chessesplayed[chessboard[i].chesslabel].side == ENEMY)
+            return false;
+    }
+    return true;
+}
+
+bool MainWindow::countEnemyChessMyCamp() {
+    for (int i = 111; i < 121; ++i) {
+        assert(chessboard[i].chesslabel >= -1 && chessboard[i].chesslabel <= 19);
+        if (chessboard[i].chesslabel == -1 || chessesplayed[chessboard[i].chesslabel].side == ME)
+            return false;
+    }
+    return true;
 }

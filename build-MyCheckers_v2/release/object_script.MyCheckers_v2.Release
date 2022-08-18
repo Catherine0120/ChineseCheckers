@@ -1,11 +1,15 @@
 release/admitdefeatdialog.o
 release/connectserver.o
 release/createconnection.o
+release/enemywindialog.o
 release/main.o
 release/mainwindow.o
+release/mewindialog.o
 release/playdialog.o
 release/moc_admitdefeatdialog.o
 release/moc_connectserver.o
 release/moc_createconnection.o
+release/moc_enemywindialog.o
 release/moc_mainwindow.o
+release/moc_mewindialog.o
 release/moc_playdialog.o

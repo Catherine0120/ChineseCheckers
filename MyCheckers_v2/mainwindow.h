@@ -10,6 +10,8 @@
 #include <QTimer>
 #include <vector>
 #include "chess.h"
+#include "enemywindialog.h"
+#include "mewindialog.h"
 
 
 enum color_set {RED = 0, YELLOW = 1, GREEN = 2, BLUE = 3, PURPLE = 4, PINK = 5};
@@ -54,6 +56,12 @@ public:
     void bfs(int pos);
     std::vector<int> prepare_bfs_function(int start);
 
+    int countMyChessMyCamp();
+    int countEnemyChessEnemyCamp();
+
+    bool countMyChessEnemyCamp();
+    bool countEnemyChessMyCamp();
+
 private slots:
     void on_redColor_clicked();
 
@@ -97,6 +105,10 @@ private slots:
 
     void enemyLCDend();
 
+    void displayEnemyWin();
+
+    void displayMeWin();
+
 signals:
     void mouseMove(QMouseEvent *event);
 
@@ -109,6 +121,10 @@ signals:
     void endMyRound();
 
     void endEnemyRound();
+
+    void EnemyWin();
+
+    void MeWin();
 
 private:
     Ui::MainWindow *ui;
@@ -134,7 +150,9 @@ private:
     QTimer * myTimer;
     QTimer * enemyTimer;
 
-    int MyTimerId, EnemyTimerId;
+    EnemyWinDialog * pE = new EnemyWinDialog();
+    MeWinDialog * pM = new MeWinDialog();
+
 };
 
 
