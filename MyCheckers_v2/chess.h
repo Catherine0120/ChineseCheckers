@@ -15,6 +15,7 @@ struct Chess {
     bool mouseon = false;
     bool haschess = false;
     int chessboardlabel = -1; //0-120
+    bool feasibility = false;
 
     //chessesplayed:
     bool beingpressed = false;

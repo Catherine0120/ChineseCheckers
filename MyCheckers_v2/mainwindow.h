@@ -8,6 +8,7 @@
 #include <QMouseEvent>
 #include <QVector>
 #include <QTimer>
+#include <vector>
 #include "chess.h"
 
 
@@ -45,8 +46,13 @@ public:
 
     int mouse_on_chess(double grid_x, int grid_y);
     int mouse_on_chessboard(double grid_x, int grid_y);
+    bool pos_has_chess(double grid_x, int grid_y);
+    int pos_on_chessboard(double grid_x, int grid_y);
 
     bool disobeyRules(int start, int destination);
+    std::vector<int> get_feasible_set(int start);
+    void bfs(int pos);
+    std::vector<int> prepare_bfs_function(int start);
 
 private slots:
     void on_redColor_clicked();
@@ -119,6 +125,7 @@ private:
     QPixmap pm_enemy, pm_me;
 
     Chess * chessbeingmoved = nullptr;
+    int chessselected = -1;
 
     static constexpr int num_chesses[]= {
         1, 2, 3, 4, 13, 12, 11, 10, 9, 10, 11, 12, 13, 4, 3, 2, 1
@@ -128,9 +135,6 @@ private:
     QTimer * enemyTimer;
 
     int MyTimerId, EnemyTimerId;
-
-    int chessselected = -1;
-
 };
 
 

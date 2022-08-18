@@ -1018,7 +1018,44 @@ release/admitdefeatdialog.o: ../MyCheckers_v2/admitdefeatdialog.cpp ../MyChecker
 		../../../../Qt/6.3.1/mingw_64/include/QtCore/QSizeF \
 		../../../../Qt/6.3.1/mingw_64/include/QtGui/QTransform \
 		../../../../Qt/6.3.1/mingw_64/include/QtCore/qnativeinterface.h \
-		ui_admitdefeatdialog.h
+		ui_admitdefeatdialog.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/QVariant \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QApplication \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qapplication.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qcoreapplication.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qeventloop.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qcoreapplication_platform.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfuture.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfutureinterface.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qmutex.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qresultstore.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfuture_impl.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qthreadpool.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qthread.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qdeadlinetimer.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qelapsedtimer.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qrunnable.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qexception.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qpromise.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qguiapplication.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qinputmethod.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qlocale.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qguiapplication_platform.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QGroupBox \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qgroupbox.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qframe.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QHBoxLayout \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qboxlayout.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlayout.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlayoutitem.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qgridlayout.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QLabel \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlabel.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qpicture.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qtextdocument.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QPushButton \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qpushbutton.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qabstractbutton.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\admitdefeatdialog.o ..\MyCheckers_v2\admitdefeatdialog.cpp
 
 release/connectserver.o: ../MyCheckers_v2/connectserver.cpp ../MyCheckers_v2/connectserver.h \
@@ -1159,7 +1196,50 @@ release/connectserver.o: ../MyCheckers_v2/connectserver.cpp ../MyCheckers_v2/con
 		../../../../Qt/6.3.1/mingw_64/include/QtGui/qvalidator.h \
 		../../../../Qt/6.3.1/mingw_64/include/QtCore/qregularexpression.h \
 		../../../../Qt/6.3.1/mingw_64/include/QtCore/qlocale.h \
-		ui_connectserver.h
+		ui_connectserver.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/QVariant \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QApplication \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qapplication.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qcoreapplication.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qeventloop.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qcoreapplication_platform.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfuture.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfutureinterface.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qmutex.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qresultstore.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfuture_impl.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qthreadpool.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qthread.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qdeadlinetimer.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qelapsedtimer.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qrunnable.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qexception.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qpromise.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qguiapplication.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qinputmethod.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qguiapplication_platform.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QGridLayout \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qgridlayout.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlayout.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlayoutitem.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qboxlayout.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QGroupBox \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qgroupbox.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qframe.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QHBoxLayout \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QLabel \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlabel.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qpicture.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qtextdocument.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QLineEdit \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlineedit.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qtextcursor.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qtextformat.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qpen.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qtextoption.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QPushButton \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qpushbutton.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qabstractbutton.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\connectserver.o ..\MyCheckers_v2\connectserver.cpp
 
 release/createconnection.o: ../MyCheckers_v2/createconnection.cpp ../MyCheckers_v2/createconnection.h \
@@ -1296,7 +1376,39 @@ release/createconnection.o: ../MyCheckers_v2/createconnection.cpp ../MyCheckers_
 		../../../../Qt/6.3.1/mingw_64/include/QtCore/QSizeF \
 		../../../../Qt/6.3.1/mingw_64/include/QtGui/QTransform \
 		../../../../Qt/6.3.1/mingw_64/include/QtCore/qnativeinterface.h \
-		ui_createconnection.h
+		ui_createconnection.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/QVariant \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QApplication \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qapplication.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qcoreapplication.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qeventloop.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qcoreapplication_platform.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfuture.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfutureinterface.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qmutex.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qresultstore.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfuture_impl.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qthreadpool.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qthread.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qdeadlinetimer.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qelapsedtimer.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qrunnable.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qexception.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qpromise.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qguiapplication.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qinputmethod.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qlocale.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qguiapplication_platform.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QGroupBox \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qgroupbox.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qframe.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QLabel \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlabel.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qpicture.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qtextdocument.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QPushButton \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qpushbutton.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qabstractbutton.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\createconnection.o ..\MyCheckers_v2\createconnection.cpp
 
 release/main.o: ../MyCheckers_v2/main.cpp ../MyCheckers_v2/mainwindow.h \
@@ -1627,6 +1739,49 @@ release/mainwindow.o: ../MyCheckers_v2/mainwindow.cpp ../MyCheckers_v2/mainwindo
 		../../../../Qt/6.3.1/mingw_64/include/QtCore/qbasictimer.h \
 		../MyCheckers_v2/chess.h \
 		ui_mainwindow.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/QVariant \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/QAction \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QApplication \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qapplication.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qcoreapplication.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qeventloop.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qcoreapplication_platform.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfuture.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfutureinterface.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qmutex.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qresultstore.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfuture_impl.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qthreadpool.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qthread.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qdeadlinetimer.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qelapsedtimer.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qrunnable.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qexception.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qpromise.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qguiapplication.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qinputmethod.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qlocale.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qguiapplication_platform.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QGridLayout \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qgridlayout.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlayout.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlayoutitem.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qboxlayout.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QGroupBox \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qgroupbox.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QLCDNumber \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlcdnumber.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QMenu \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qmenu.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QMenuBar \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qmenubar.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QPushButton \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qpushbutton.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qabstractbutton.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QStatusBar \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qstatusbar.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QVBoxLayout \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QWidget \
 		../MyCheckers_v2/createconnection.h \
 		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QDialog \
 		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qdialog.h \
@@ -1634,20 +1789,14 @@ release/mainwindow.o: ../MyCheckers_v2/mainwindow.cpp ../MyCheckers_v2/mainwindo
 		../../../../Qt/6.3.1/mingw_64/include/QtGui/QValidator \
 		../../../../Qt/6.3.1/mingw_64/include/QtGui/qvalidator.h \
 		../../../../Qt/6.3.1/mingw_64/include/QtCore/qregularexpression.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qlocale.h \
 		../MyCheckers_v2/playdialog.h \
 		../MyCheckers_v2/admitdefeatdialog.h \
 		../../../../Qt/6.3.1/mingw_64/include/QtGui/QPixmap \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QGroupBox \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qgroupbox.h \
 		../../../../Qt/6.3.1/mingw_64/include/QtCore/QString \
 		../../../../Qt/6.3.1/mingw_64/include/QtCore/QDebug \
 		../../../../Qt/6.3.1/mingw_64/include/QtCore/QTime \
 		../../../../Qt/6.3.1/mingw_64/include/QtCore/qdatetime.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qcalendar.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QMenuBar \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qmenubar.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qmenu.h
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qcalendar.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\mainwindow.o ..\MyCheckers_v2\mainwindow.cpp
 
 release/playdialog.o: ../MyCheckers_v2/playdialog.cpp ../MyCheckers_v2/playdialog.h \
@@ -1784,7 +1933,44 @@ release/playdialog.o: ../MyCheckers_v2/playdialog.cpp ../MyCheckers_v2/playdialo
 		../../../../Qt/6.3.1/mingw_64/include/QtCore/QSizeF \
 		../../../../Qt/6.3.1/mingw_64/include/QtGui/QTransform \
 		../../../../Qt/6.3.1/mingw_64/include/QtCore/qnativeinterface.h \
-		ui_playdialog.h
+		ui_playdialog.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/QVariant \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QApplication \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qapplication.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qcoreapplication.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qeventloop.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qcoreapplication_platform.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfuture.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfutureinterface.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qmutex.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qresultstore.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfuture_impl.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qthreadpool.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qthread.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qdeadlinetimer.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qelapsedtimer.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qrunnable.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qexception.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qpromise.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qguiapplication.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qinputmethod.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qlocale.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qguiapplication_platform.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QGroupBox \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qgroupbox.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qframe.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QHBoxLayout \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qboxlayout.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlayout.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlayoutitem.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qgridlayout.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QLabel \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlabel.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qpicture.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtGui/qtextdocument.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QPushButton \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qpushbutton.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qabstractbutton.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\playdialog.o ..\MyCheckers_v2\playdialog.cpp
 
 release/moc_admitdefeatdialog.o: release/moc_admitdefeatdialog.cpp 

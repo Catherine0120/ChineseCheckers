@@ -4,6 +4,7 @@
 #include "connectserver.h"
 #include "playdialog.h"
 #include "admitdefeatdialog.h"
+
 #include <algorithm>
 #include <QPainter>
 #include <QPixmap>
@@ -14,6 +15,9 @@
 #include <QTime>
 #include <QTimer>
 #include <QMenuBar>
+#include <vector>
+#include <assert.h>
+#include <queue>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -65,6 +69,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+//Events：
 void MainWindow::paintEvent(QPaintEvent *) {
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing, false);
@@ -72,6 +77,74 @@ void MainWindow::paintEvent(QPaintEvent *) {
 
     paintEventChessBoard(p);
     paintEventChessesPlayed(p);
+}
+
+void MainWindow::paintEventChessBoard(QPainter & p) {
+    auto real_w = this->centralWidget()->width() - 450; //空闲区width
+    auto real_h = this->centralWidget()->height(); //空闲区height
+    auto board_h = std::min(real_w, real_h); //棋盘区height
+    auto board_w = board_h * 13 / 0.866 / 17; //棋盘区width
+    board_w_off = 450 + (real_w - board_w) / 2; //最左侧像素坐标
+    board_h_off = (real_h - board_h) / 2 + 2 * (ui->menubar->heightForWidth(this->width())); //最上方像素坐标
+    grid_w = board_w / 13; //每一个棋子的width
+    grid_h = board_h / 17; //每一个棋子的height
+    d_chessboard = grid_h * 0.9; //直径
+    d_chess = d_chessboard * 1.1;
+    p.drawPixmap(0, 0, width(), height(), QPixmap("../images/BackgroundPlain.png")); //背景图片
+    auto pm = QPixmap("../images/white.png").scaled(d_chessboard, d_chessboard, Qt::KeepAspectRatio); //每一个棋子的QPixmap
+
+    for (int i = 0; i < chessboard.size(); ++i) {
+        Chess &chess = chessboard[i];
+        chessboard[i].chessboardlabel = i;
+        //每个棋子坐标对应的屏幕像素坐标
+        int grid_screen_x = get_grid_screen_x(chess);
+        int grid_screen_y = get_grid_screen_y(chess);
+        //p.setPen(Qt::red);
+        //p.drawRect(QRect(grid_screen_x, grid_screen_y, grid_w, grid_h));
+        p.drawPixmap(grid_screen_x, grid_screen_y, pm);
+    }
+}
+
+void MainWindow::paintEventChessesPlayed(QPainter & p) {
+    switch(myColor) {
+        case(0):
+            pm_me = QPixmap("../images/red.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/blue.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            break;
+        case(1):
+            pm_me = QPixmap("../images/yellow.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/purple.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            break;
+        case(2):
+            pm_me = QPixmap("../images/green.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/pink.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            break;
+        case(3):
+            pm_me = QPixmap("../images/blue.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/red.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            break;
+        case(4):
+            pm_me = QPixmap("../images/purple.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/yellow.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            break;
+        case(5):
+            pm_me = QPixmap("../images/pink.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            pm_enemy = QPixmap("../images/green.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+            break;
+    }
+
+    if (buttonstart) {
+        for (int i = 0; i < chessesplayed.size(); ++i) {
+            int grid_screen_x = get_grid_screen_x(chessesplayed[i]);
+            int grid_screen_y = get_grid_screen_y(chessesplayed[i]);
+            if (chessesplayed[i].side == ENEMY)
+                p.drawPixmap(grid_screen_x, grid_screen_y, pm_enemy);
+            else if (chessesplayed[i].side == ME)
+                p.drawPixmap(grid_screen_x, grid_screen_y, pm_me);
+        }
+    }
+    this->update();
+
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent * event) {
@@ -136,7 +209,7 @@ void MainWindow::mousePressEvent(QMouseEvent * event) {
 
 void MainWindow::mouseReleaseEvent(QMouseEvent * event) {
     if (chessbeingmoved == nullptr) {
-        qDebug() << "mouseReleaseEvent triggered but no chess being moved!";
+//        qDebug() << "mouseReleaseEvent triggered but no chess being moved!";
         return;
     }
 
@@ -147,7 +220,8 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event) {
 
     int num = mouse_on_chessboard(grid_x, grid_y);
 
-    if (num == -1 || chessboard[num].haschess || disobeyRules(chessbeingmoved->chessboardlabel , num)) { //不在棋盘上或棋盘位置有棋子
+    if (num == -1 || chessboard[num].haschess || disobeyRules(chessbeingmoved->chessboardlabel, num)) {
+        qDebug() << "[wrong]: " << bool(num == -1) << " " << bool(chessboard[num].haschess) << " " << bool(disobeyRules(chessbeingmoved->chessboardlabel, num));
         chessbeingmoved->x = chessboard[chessbeingmoved->chessboardlabel].x;
         chessbeingmoved->y = chessboard[chessbeingmoved->chessboardlabel].y;
         chessbeingmoved->beingpressed = false;
@@ -168,6 +242,8 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event) {
     }
 }
 
+
+//UI paintings：
 void MainWindow::showBall(enum color_set color) {
     switch(color) {
         case RED:
@@ -264,6 +340,8 @@ void MainWindow::drawMouse(QMouseEvent * event) {
                                  + "\n(" + QString::number(grid_x, 'f', 1) + ", " + QString::number(grid_y, 'f', 1) + ")");
 }
 
+
+//Signals and Slots:
 void MainWindow::on_open_start_collection() {
     createconnection * p = new createconnection();
     p->setWindowModality(Qt::ApplicationModal);
@@ -288,6 +366,8 @@ void MainWindow::on_open_admit_defeat_action() {
     p->show();
 }
 
+
+//StartButton:
 void MainWindow::on_startButton_clicked()
 {
     buttonstart = true;
@@ -378,6 +458,8 @@ void MainWindow::on_startButton_clicked()
 
 }
 
+
+//Functions:
 int MainWindow::get_grid_screen_x(Chess chess) {
     return board_w_off + (6 + chess.x) * grid_w;
 }
@@ -420,88 +502,129 @@ int MainWindow::mouse_on_chessboard(double grid_x, int grid_y) {
     return ret; //返回棋盘编号
 }
 
-void MainWindow::paintEventChessBoard(QPainter & p) {
-    auto real_w = this->centralWidget()->width() - 450; //空闲区width
-    auto real_h = this->centralWidget()->height(); //空闲区height
-    auto board_h = std::min(real_w, real_h); //棋盘区height
-    auto board_w = board_h * 13 / 0.866 / 17; //棋盘区width
-    board_w_off = 450 + (real_w - board_w) / 2; //最左侧像素坐标
-    board_h_off = (real_h - board_h) / 2 + 2 * (ui->menubar->heightForWidth(this->width())); //最上方像素坐标
-    grid_w = board_w / 13; //每一个棋子的width
-    grid_h = board_h / 17; //每一个棋子的height
-    d_chessboard = grid_h * 0.9; //直径
-    d_chess = d_chessboard * 1.1;
-    p.drawPixmap(0, 0, width(), height(), QPixmap("../images/BackgroundPlain.png")); //背景图片
-    auto pm = QPixmap("../images/white.png").scaled(d_chessboard, d_chessboard, Qt::KeepAspectRatio); //每一个棋子的QPixmap
-
-    for (int i = 0; i < chessboard.size(); ++i) {
-        Chess &chess = chessboard[i];
-        chessboard[i].chessboardlabel = i;
-        //每个棋子坐标对应的屏幕像素坐标
-        int grid_screen_x = get_grid_screen_x(chess);
-        int grid_screen_y = get_grid_screen_y(chess);
-        //p.setPen(Qt::red);
-        //p.drawRect(QRect(grid_screen_x, grid_screen_y, grid_w, grid_h));
-        p.drawPixmap(grid_screen_x, grid_screen_y, pm);
-    }
-}
-
-void MainWindow::paintEventChessesPlayed(QPainter & p) {
-    switch(myColor) {
-        case(0):
-            pm_me = QPixmap("../images/red.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/blue.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            break;
-        case(1):
-            pm_me = QPixmap("../images/yellow.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/purple.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            break;
-        case(2):
-            pm_me = QPixmap("../images/green.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/pink.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            break;
-        case(3):
-            pm_me = QPixmap("../images/blue.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/red.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            break;
-        case(4):
-            pm_me = QPixmap("../images/purple.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/yellow.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            break;
-        case(5):
-            pm_me = QPixmap("../images/pink.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/green.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            break;
-    }
-
-    if (buttonstart) {
-        for (int i = 0; i < chessesplayed.size(); ++i) {
-            int grid_screen_x = get_grid_screen_x(chessesplayed[i]);
-            int grid_screen_y = get_grid_screen_y(chessesplayed[i]);
-            if (chessesplayed[i].side == ENEMY)
-                p.drawPixmap(grid_screen_x, grid_screen_y, pm_enemy);
-            else if (chessesplayed[i].side == ME)
-                p.drawPixmap(grid_screen_x, grid_screen_y, pm_me);
+bool MainWindow::pos_has_chess(double grid_x, int grid_y) {
+    for (int i = 0; i < chessesplayed.size(); ++i) {
+        if ( grid_x == chessesplayed[i].x && grid_y == chessesplayed[i].y) {
+            return true;
         }
     }
-    this->update();
-
+    return false;
 }
 
+int MainWindow::pos_on_chessboard(double grid_x, int grid_y) {
+    for (int i = 0; i < chessboard.size(); ++i) {
+        if ( grid_x == chessboard[i].x && grid_y == chessboard[i].y) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+
+//Judge: obey or disobey Rules? To be continued..
 bool MainWindow::disobeyRules(int start, int destination) {
     //距离为1返回false
     if ((abs(chessboard[start].x - chessboard[destination].x) <= 1) &&
         (abs(chessboard[start].y - chessboard[destination].y) <= 1)) {
         return false;
     }
-//    else if {
-//        // to be continue: 可以按规则跳到返回false
-//    }
+    else {
+        std::vector<int> feasible_set = get_feasible_set(start);
+        for (size_t i = 0; i < feasible_set.size(); ++i) {
+            if (feasible_set[i] == destination) return false;
+        }
+    }
     return true;
 }
 
+//传入一个start位置，返回所有能通过若干步跳到的位置(包括起点位置)
+std::vector<int> MainWindow::get_feasible_set(int start) {
+    std::vector<int> final_feasible_set;
+    for (int i = 0; i < chessboard.size(); ++i) {
+        chessboard[i].feasibility = false;
+    }
+    chessboard[start].feasibility = true;
+    bfs(start);
+    for (int i = 0; i < chessboard.size(); ++i) {
+        if (chessboard[i].feasibility == true)
+            final_feasible_set.push_back(i);
+    }
+    return final_feasible_set;
+}
 
-//轮流20秒计时器：to be continued..
+//bfs
+void MainWindow::bfs(int pos) {
+    std::queue<int> q;
+    q.push(pos);
+    while (q.size()) {
+        int t = q.front();
+        std::vector<int> pos_feasible_set = prepare_bfs_function(t);
+        qDebug() << "pos = " << t << ": ----------";
+        for (size_t i = 0; i < pos_feasible_set.size(); ++i) qDebug() << pos_feasible_set[i];
+        qDebug() << "---------";
+        q.pop();
+        if (pos_feasible_set.size() == 0) continue;
+        for (size_t i = 0; i < pos_feasible_set.size(); ++i) {
+            int new_pos = pos_feasible_set[i];
+            if (chessboard[new_pos].feasibility == true) continue;
+            chessboard[new_pos].feasibility = true;
+            q.push(new_pos);
+        }
+    }
+}
+
+//传入一个start位置，返回所有能通过一步跳到的位置
+std::vector<int> MainWindow::prepare_bfs_function(int start) {
+    std::vector<int> feasible_set;
+    double pos_x = chessboard[start].x;
+    double pos_y = chessboard[start].y;
+    if (pos_has_chess(pos_x + 1, pos_y)
+        && !pos_has_chess(pos_x + 2, pos_y)
+        && pos_on_chessboard(pos_x + 2, pos_y) != -1
+        && chessboard[pos_on_chessboard(pos_x + 2, pos_y)].feasibility == false) {
+        assert(pos_on_chessboard(pos_x + 2, pos_y) == start + 2);
+        feasible_set.push_back(start + 2);
+    }
+    if (pos_has_chess(pos_x + 0.5, pos_y - 1)
+        && !pos_has_chess(pos_x + 1, pos_y - 2)
+        && pos_on_chessboard(pos_x + 1, pos_y - 2) != -1
+        && chessboard[pos_on_chessboard(pos_x + 1, pos_y - 2)].feasibility == false) {
+        int tmp_pos = pos_on_chessboard(pos_x + 1, pos_y - 2);
+        feasible_set.push_back(tmp_pos);
+    }
+    if (pos_has_chess(pos_x - 0.5, pos_y - 1)
+        && !pos_has_chess(pos_x - 1, pos_y - 2)
+        && pos_on_chessboard(pos_x - 1, pos_y - 2) != -1
+        && chessboard[pos_on_chessboard(pos_x - 1, pos_y - 2)].feasibility == false) {
+        int tmp_pos = pos_on_chessboard(pos_x - 1, pos_y - 2);
+        feasible_set.push_back(tmp_pos);
+    }
+    if (pos_has_chess(pos_x - 1, pos_y)
+        && !pos_has_chess(pos_x - 2, pos_y)
+        && pos_on_chessboard(pos_x - 2, pos_y) != -1
+        && chessboard[pos_on_chessboard(pos_x - 2, pos_y)].feasibility == false) {
+        assert(pos_on_chessboard(pos_x - 2, pos_y) == start - 2);
+        feasible_set.push_back(start - 2);
+    }
+    if (pos_has_chess(pos_x - 0.5, pos_y + 1)
+        && !pos_has_chess(pos_x - 1, pos_y + 2)
+        && pos_on_chessboard(pos_x - 1, pos_y + 2) != -1
+        && chessboard[pos_on_chessboard(pos_x - 1, pos_y + 2)].feasibility == false) {
+        int tmp_pos = pos_on_chessboard(pos_x - 1, pos_y + 2);
+        feasible_set.push_back(tmp_pos);
+    }
+    if (pos_has_chess(pos_x + 0.5, pos_y + 1)
+        && !pos_has_chess(pos_x + 1, pos_y + 2)
+        && pos_on_chessboard(pos_x + 1, pos_y + 2) != -1
+        && chessboard[pos_on_chessboard(pos_x + 1, pos_y + 2)].feasibility == false) {
+        int tmp_pos = pos_on_chessboard(pos_x + 1, pos_y + 2);
+        feasible_set.push_back(tmp_pos);
+    }
+    return feasible_set;
+}
+
+
+//LCD-Timer：to be continued..
 void MainWindow::myTimerSlotStart() {
     myTimer->start(1000);
 }
