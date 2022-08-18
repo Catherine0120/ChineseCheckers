@@ -687,7 +687,7 @@ std::vector<int> MainWindow::prepare_bfs_function(int start) {
 }
 
 
-//LCD-Timer：to be continued..
+//LCD-Timer
 void MainWindow::myTimerSlotStart() {
     myTimer->start(1000);
 }
@@ -700,6 +700,8 @@ void MainWindow::myLCDCount() {
         emit startMyTimer();
     }
     else {
+        meRunTime++;
+        if (meRunTime == 3) emit EnemyWin();
         if ((int)(ui->lcdRoundNumber->value()) == 20
             && countMyChessMyCamp() > 5) {
             emit EnemyWin();
@@ -735,6 +737,8 @@ void MainWindow::enemyLCDCount() {
         emit startEnemyTimer();
     }
     else {
+        enemyRunTime++;
+        if (enemyRunTime == 3) emit MeWin();
         if ((int)(ui->lcdRoundNumber->value()) == 20
             && countEnemyChessEnemyCamp() > 5) {
             emit MeWin();

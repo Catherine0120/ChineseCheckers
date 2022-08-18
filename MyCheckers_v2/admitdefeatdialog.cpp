@@ -19,7 +19,6 @@ AdmitDefeatDialog::~AdmitDefeatDialog()
 
 void AdmitDefeatDialog::on_yesButton_clicked()
 {
-    qDebug() << "admit defeat!";
     emit switchFlag();
 }
 

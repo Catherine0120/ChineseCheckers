@@ -161,6 +161,9 @@ private:
     AdmitDefeatDialog * pD;
     PlayDialog * pS;
 
+    int meRunTime = 0;
+    int enemyRunTime = 0;
+
 };
 
 
