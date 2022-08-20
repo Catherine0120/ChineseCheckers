@@ -32,7 +32,7 @@ private slots:
     void on_closeButton_clicked();
 
 signals:
-    void startPermitted();
+    void startPermitted(bool);
 
     void changeColor();
 

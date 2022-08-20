@@ -39,9 +39,13 @@ void connectserver::outputMessageReceived(QString str) {
         ui->textEdit->append("[Server]: " + str);
         connectedToServer = true;
     }
-    else if (str == "Start Permitted") {
-        emit startPermitted();
+    else if (str.left(15) == "Start Permitted") {
         ui->textEdit->append("[Server]: Game Starts Now!");
+        if (str == "Start Permitted, you go first") emit startPermitted(true);
+        else {
+            assert (str == "Start Permitted, enemy goes first");
+            emit startPermitted(false);
+        }
     }
     else if (str == "Please select another color") {
         emit changeColor();
@@ -49,6 +53,7 @@ void connectserver::outputMessageReceived(QString str) {
     }
     else if (str.left(18) == "Enemy's BallColor=") {
         enemyColor = str.mid(18).toInt();
+        qDebug() << "eneymeColor = " << enemyColor;
         emit getEnemyColor();
     }
     else if (str == "Enemy disconnected") {

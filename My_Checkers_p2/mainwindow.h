@@ -117,7 +117,7 @@ private slots:
 
     void displayMeWin();
 
-    void startGame();
+    void startGame(bool flag);
 
     void onChangeColor();
 
@@ -147,6 +147,8 @@ private:
     QVector<Chess> chessboard;
     QVector<Chess> chessesplayed;
 
+    bool IGoFirst;
+
     int board_w_off, board_h_off; //左上像素点坐标
     int grid_w, grid_h; //每一个棋子的宽和高，grid_h为棋子直径
     double d_chessboard; //棋盘棋坑的直径
@@ -154,7 +156,7 @@ private:
     QPixmap background;
 
     bool buttonstart = false;
-    QPixmap pm_enemy, pm_me;
+    QPixmap pm_enemy, pm_me, pm_board;
 
     Chess * chessbeingmoved = nullptr;
     int chessselected = -1;

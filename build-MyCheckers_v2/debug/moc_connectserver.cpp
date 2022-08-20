@@ -63,19 +63,19 @@ static const uint qt_meta_data_connectserver[] = {
        4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   62,    2, 0x06,    1 /* Public */,
-       3,    0,   63,    2, 0x06,    2 /* Public */,
-       4,    0,   64,    2, 0x06,    3 /* Public */,
-       5,    0,   65,    2, 0x06,    4 /* Public */,
+       1,    1,   62,    2, 0x06,    1 /* Public */,
+       3,    0,   65,    2, 0x06,    3 /* Public */,
+       4,    0,   66,    2, 0x06,    4 /* Public */,
+       5,    0,   67,    2, 0x06,    5 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       6,    1,   66,    2, 0x08,    5 /* Private */,
-       7,    0,   69,    2, 0x08,    7 /* Private */,
-       8,    0,   70,    2, 0x08,    8 /* Private */,
-       9,    0,   71,    2, 0x08,    9 /* Private */,
+       6,    1,   68,    2, 0x08,    6 /* Private */,
+       7,    0,   71,    2, 0x08,    8 /* Private */,
+       8,    0,   72,    2, 0x08,    9 /* Private */,
+       9,    0,   73,    2, 0x08,   10 /* Private */,
 
  // signals: parameters
-    QMetaType::Void,
+    QMetaType::Void, QMetaType::Bool,    2,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -95,7 +95,7 @@ void connectserver::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         auto *_t = static_cast<connectserver *>(_o);
         (void)_t;
         switch (_id) {
-        case 0: _t->startPermitted(); break;
+        case 0: _t->startPermitted((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
         case 1: _t->changeColor(); break;
         case 2: _t->getEnemyColor(); break;
         case 3: _t->endGame(); break;
@@ -108,7 +108,7 @@ void connectserver::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            using _t = void (connectserver::*)();
+            using _t = void (connectserver::*)(bool );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&connectserver::startPermitted)) {
                 *result = 0;
                 return;
@@ -145,7 +145,7 @@ const QMetaObject connectserver::staticMetaObject = { {
     qt_static_metacall,
     nullptr,
 qt_incomplete_metaTypeArray<qt_meta_stringdata_connectserver_t
-, QtPrivate::TypeAndForceComplete<connectserver, std::true_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>
+, QtPrivate::TypeAndForceComplete<connectserver, std::true_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<bool, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>
 , QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<QString, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>
 
 
@@ -185,9 +185,10 @@ int connectserver::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void connectserver::startPermitted()
+void connectserver::startPermitted(bool _t1)
 {
-    QMetaObject::activate(this, &staticMetaObject, 0, nullptr);
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1

@@ -5,6 +5,8 @@
 #include <QHostAddress>
 #include <QNetworkInterface>
 #include <qDebug>
+#include <QTime>
+#include <QtGlobal>
 
 const quint16 PORT = 8888;
 
@@ -63,17 +65,27 @@ void MainWindow::onTextMessageReceived(QString str) {
         }
         else if (webSocket_2 != nullptr) { //两个Clients都已经连接上了
             if (socket == webSocket_2) colorClient_2 = str.mid(16).toInt();
-            else {
-                assert(socket == webSocket_1);
-                colorClient_1 = str.mid(16).toInt();
-            }
+            else colorClient_1 = str.mid(16).toInt();
 
             if (colorClient_1 != colorClient_2 && colorClient_1 != -1 && colorClient_2 != -1) {
-                webSocket_1->sendTextMessage("Start Permitted");
-                webSocket_2->sendTextMessage("Start Permitted");
+                gameStarted = true;
+                QTime randtime;
+                randtime = QTime::currentTime();
+                srand(randtime.msec() + randtime.second() * 1000);
+
+                int n = rand() % 2;
+
                 webSocket_1->sendTextMessage(QString("Enemy's BallColor=") + QString::number(colorClient_2));
                 webSocket_2->sendTextMessage(QString("Enemy's BallColor=") + QString::number(colorClient_1));
-                gameStarted = true;
+                if (n == 0) {
+                    webSocket_1->sendTextMessage("Start Permitted, you go first");
+                    webSocket_2->sendTextMessage("Start Permitted, enemy goes first");
+                }
+                else {
+                    assert(n == 1);
+                    webSocket_2->sendTextMessage("Start Permitted, you go first");
+                    webSocket_1->sendTextMessage("Start Permitted, enemy goes first");
+                }
             }
             else if (colorClient_1 == colorClient_2) {
                 socket->sendTextMessage("Please select another color");
@@ -107,6 +119,7 @@ void MainWindow::onTextMessageReceived(QString str) {
     ui->textEdit->append(QString("Client[%1:%2]: ")
                          .arg(socket->localAddress().toString())
                          .arg(socket->localPort()) + "Ready to Start, BallSelected=" + tmpColor);
+    if (gameStarted) ui->textEdit->append("GAME STARTED!");
     if (flag) ui->textEdit->append("Asking client to select another color...");
 }
 
@@ -121,10 +134,14 @@ void MainWindow::onDisconnected() {
     if (socket == webSocket_1) {
         webSocket_1->close();
         webSocket_1 = nullptr;
+        colorClient_1 = -1;
+        gameStarted = false;
     }
     else if (socket == webSocket_2) {
         webSocket_2->close();
         webSocket_2 = nullptr;
+        colorClient_2 = -1;
+        gameStarted = false;
     }
 
 

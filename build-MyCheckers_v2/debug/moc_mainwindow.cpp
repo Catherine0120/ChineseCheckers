@@ -23,8 +23,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    const uint offsetsAndSize[80];
-    char stringdata0[639];
+    const uint offsetsAndSize[82];
+    char stringdata0[644];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(offsetof(qt_meta_stringdata_MainWindow_t, stringdata0) + ofs), len 
@@ -68,8 +68,9 @@ QT_MOC_LITERAL(560, 11), // "enemyLCDend"
 QT_MOC_LITERAL(572, 15), // "displayEnemyWin"
 QT_MOC_LITERAL(588, 12), // "displayMeWin"
 QT_MOC_LITERAL(601, 9), // "startGame"
-QT_MOC_LITERAL(611, 13), // "onChangeColor"
-QT_MOC_LITERAL(625, 13) // "setEnemyColor"
+QT_MOC_LITERAL(611, 4), // "flag"
+QT_MOC_LITERAL(616, 13), // "onChangeColor"
+QT_MOC_LITERAL(630, 13) // "setEnemyColor"
 
     },
     "MainWindow\0mouseMove\0\0QMouseEvent*\0"
@@ -88,7 +89,7 @@ QT_MOC_LITERAL(625, 13) // "setEnemyColor"
     "myLCDCount\0enemyTimerSlotStart\0"
     "enemyLCDCount\0roundLCDIncrease\0myLCDend\0"
     "enemyLCDend\0displayEnemyWin\0displayMeWin\0"
-    "startGame\0onChangeColor\0setEnemyColor"
+    "startGame\0flag\0onChangeColor\0setEnemyColor"
 };
 #undef QT_MOC_LITERAL
 
@@ -141,9 +142,9 @@ static const uint qt_meta_data_MainWindow[] = {
       34,    0,  264,    2, 0x08,   33 /* Private */,
       35,    0,  265,    2, 0x08,   34 /* Private */,
       36,    0,  266,    2, 0x08,   35 /* Private */,
-      37,    0,  267,    2, 0x08,   36 /* Private */,
-      38,    0,  268,    2, 0x08,   37 /* Private */,
-      39,    0,  269,    2, 0x08,   38 /* Private */,
+      37,    1,  267,    2, 0x08,   36 /* Private */,
+      39,    0,  270,    2, 0x08,   38 /* Private */,
+      40,    0,  271,    2, 0x08,   39 /* Private */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
@@ -181,7 +182,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void,
+    QMetaType::Void, QMetaType::Bool,   38,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -227,7 +228,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 30: _t->enemyLCDend(); break;
         case 31: _t->displayEnemyWin(); break;
         case 32: _t->displayMeWin(); break;
-        case 33: _t->startGame(); break;
+        case 33: _t->startGame((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
         case 34: _t->onChangeColor(); break;
         case 35: _t->setEnemyColor(); break;
         default: ;
@@ -301,7 +302,7 @@ const QMetaObject MainWindow::staticMetaObject = { {
     nullptr,
 qt_incomplete_metaTypeArray<qt_meta_stringdata_MainWindow_t
 , QtPrivate::TypeAndForceComplete<MainWindow, std::true_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<QMouseEvent *, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>
-, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<QMouseEvent *, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>
+, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<QMouseEvent *, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<bool, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>
 
 
 >,

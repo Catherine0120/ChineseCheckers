@@ -72,7 +72,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(pE, SIGNAL(tryagain()), this, SLOT(start_new_page()));
     connect(pM, SIGNAL(winagain()), this, SLOT(start_new_page()));
 
-    connect(pServer, SIGNAL(startPermitted()), this, SLOT(startGame()));
+    //Server信号与槽
+    connect(pServer, SIGNAL(startPermitted(bool)), this, SLOT(startGame(bool)));
     connect(pServer, SIGNAL(changeColor()), this, SLOT(onChangeColor()));
     connect(pServer, SIGNAL(getEnemyColor()), this, SLOT(setEnemyColor()));
     connect(pServer, SIGNAL(endGame()), this, SLOT(start_new_page()));
@@ -120,7 +121,7 @@ void MainWindow::paintEventChessBoard(QPainter & p) {
     d_chessboard = grid_h * 0.9; //直径
     d_chess = d_chessboard * 1.1;
     p.drawPixmap(0, 0, width(), height(), background); //背景图片
-    auto pm = QPixmap("../images/white.png").scaled(d_chessboard, d_chessboard, Qt::KeepAspectRatio); //每一个棋子的QPixmap
+    pm_board = QPixmap("../images/white.png").scaled(d_chessboard, d_chessboard, Qt::KeepAspectRatio); //每一个棋子的QPixmap
 
     for (int i = 0; i < chessboard.size(); ++i) {
         Chess &chess = chessboard[i];
@@ -130,38 +131,11 @@ void MainWindow::paintEventChessBoard(QPainter & p) {
         int grid_screen_y = get_grid_screen_y(chess);
         //p.setPen(Qt::red);
         //p.drawRect(QRect(grid_screen_x, grid_screen_y, grid_w, grid_h));
-        p.drawPixmap(grid_screen_x, grid_screen_y, pm);
+        p.drawPixmap(grid_screen_x, grid_screen_y, pm_board);
     }
 }
 
 void MainWindow::paintEventChessesPlayed(QPainter & p) {
-    switch(myColor) {
-        case(0):
-            pm_me = QPixmap("../images/red.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/blue.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            break;
-        case(1):
-            pm_me = QPixmap("../images/yellow.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/purple.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            break;
-        case(2):
-            pm_me = QPixmap("../images/green.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/pink.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            break;
-        case(3):
-            pm_me = QPixmap("../images/blue.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/red.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            break;
-        case(4):
-            pm_me = QPixmap("../images/purple.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/yellow.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            break;
-        case(5):
-            pm_me = QPixmap("../images/pink.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            pm_enemy = QPixmap("../images/green.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
-            break;
-    }
-
     if (buttonstart) {
         for (int i = 0; i < chessesplayed.size(); ++i) {
             int grid_screen_x = get_grid_screen_x(chessesplayed[i]);
@@ -470,8 +444,9 @@ void MainWindow::on_startButton_clicked()
 
 }
 
-void MainWindow::startGame() {
+void MainWindow::startGame(bool flag) {
     buttonstart = true;
+    IGoFirst = flag;
 
     ui->loadLabel->setText("Loading...");
 
@@ -489,9 +464,17 @@ void MainWindow::startGame() {
     ui->roundCountBox->show();
     ui->lcdRoundNumber->show();
 
-    ui->lcdNumberYour->display(20);
-    ui->lcdNumberEnemy->display(0);
-    emit startMyTimer();
+    if (flag) {
+        ui->lcdNumberYour->display(20);
+        ui->lcdNumberEnemy->display(0);
+        emit startMyTimer();
+    }
+
+    else {
+        ui->lcdNumberEnemy->display(20);
+        ui->lcdNumberYour->display(0);
+        emit startEnemyTimer();
+    }
 
     switch(myColor) {
         case(0):
@@ -788,6 +771,7 @@ void MainWindow::myLCDCount() {
             emit EnemyWin();
             return;
         }
+        if (!IGoFirst) emit increaseRoundNumber();
         chessselected = -1;
         ui->lcdNumberEnemy->display(20);
         emit startEnemyTimer();
@@ -825,7 +809,7 @@ void MainWindow::enemyLCDCount() {
             emit MeWin();
             return;
         }
-        emit increaseRoundNumber();
+        if (IGoFirst) emit increaseRoundNumber();
         chessselected = -1;
         ui->lcdNumberYour->display(20);
         emit startMyTimer();
