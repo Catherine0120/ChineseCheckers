@@ -19,6 +19,7 @@
 #include "admitdefeatdialog.h"
 #include "playdialog.h"
 #include "connectserver.h"
+#include "helpdialog.h"
 
 
 enum color_set {RED = 0, YELLOW = 1, GREEN = 2, BLUE = 3, PURPLE = 4, PINK = 5};
@@ -126,6 +127,16 @@ private slots:
 
     void parseMessageReceived(int, int, int);
 
+    void onEnemyAdmitDefeat();
+
+    void on_helpButton_clicked();
+
+    void on_pauseButton_clicked();
+
+    void onEnemyPause();
+
+    void onEnemyStopPause();
+
 signals:
     void mouseMove(QMouseEvent *event);
 
@@ -151,6 +162,7 @@ private:
     QVector<Chess> chessesplayed;
 
     bool IGoFirst;
+    bool isPause = false;
 
     int board_w_off, board_h_off; //左上像素点坐标
     int grid_w, grid_h; //每一个棋子的宽和高，grid_h为棋子直径
@@ -172,6 +184,7 @@ private:
     MeWinDialog * pM;
     AdmitDefeatDialog * pD;
     PlayDialog * pS;
+    HelpDialog * pH;
 
     connectserver *pServer;
 

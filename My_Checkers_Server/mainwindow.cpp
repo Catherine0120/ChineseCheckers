@@ -4,7 +4,6 @@
 #include <QList>
 #include <QHostAddress>
 #include <QNetworkInterface>
-#include <qDebug>
 #include <QTime>
 #include <QTimer>
 #include <QtGlobal>
@@ -180,6 +179,44 @@ void MainWindow::onTextMessageReceived(QString str) {
     else if (str == "I WIN!") {
         lateTimer->stop();
         earlyTimer->stop();
+        ui->textEdit->append("Game Ended");
+    }
+
+    else if (str == "I admit defeat") {
+        lateTimer->stop();
+        earlyTimer->stop();
+        if (socket == webSocket_1) webSocket_2->sendTextMessage("Enemy admit defeat. You win!");
+        else webSocket_1->sendTextMessage("Enemy admit defeat. You win!");
+        ui->textEdit->append("Game Ended");
+    }
+
+    else if (str.left(5) == "Round") {
+        ui->textEdit->append("[Client]: " + str);
+        lateTimer->stop();
+        earlyTimer->stop();
+        if (socket == webSocket_1) webSocket_2->sendTextMessage("Enemy admit defeat. You win!");
+        else webSocket_1->sendTextMessage("Enemy admit defeat. You win!");
+        ui->textEdit->append("Game Ended");
+    }
+
+    else if (str == "[Sender]: Pause") {
+        if (socket == webSocket_1) webSocket_2->sendTextMessage("Enemy Pause");
+        else webSocket_1->sendTextMessage("Enemy Pause");
+
+        earlyTimer->stop();
+        lateTimer->stop();
+        ui->textEdit->append("Game Pauses...");
+    }
+
+    else if (str == "[Sender]: Stop Pause") {
+        if (socket == webSocket_1) webSocket_2->sendTextMessage("Enemy Stop Pause");
+        else webSocket_1->sendTextMessage("Enemy Stop Pause");
+
+        if (earlyLCD != 0) emit startEarlyTimer();
+        else {
+            assert(lateLCD != 0);
+            emit startLateTimer();
+        }
     }
 }
 

@@ -13,6 +13,7 @@ SOURCES += \
     connectserver.cpp \
     createconnection.cpp \
     enemywindialog.cpp \
+    helpdialog.cpp \
     main.cpp \
     mainwindow.cpp \
     mewindialog.cpp \
@@ -24,6 +25,7 @@ HEADERS += \
     connectserver.h \
     createconnection.h \
     enemywindialog.h \
+    helpdialog.h \
     mainwindow.h \
     mewindialog.h \
     playdialog.h
@@ -33,6 +35,7 @@ FORMS += \
     connectserver.ui \
     createconnection.ui \
     enemywindialog.ui \
+    helpdialog.ui \
     mainwindow.ui \
     mewindialog.ui \
     playdialog.ui

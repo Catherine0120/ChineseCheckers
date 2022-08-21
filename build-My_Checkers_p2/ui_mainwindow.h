@@ -20,8 +20,8 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
-#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -54,13 +54,15 @@ public:
     QLabel *MyBall;
     QLabel *EnemyBall;
     QLabel *loadLabel;
-    QWidget *layoutWidget;
-    QVBoxLayout *LeftBottomLayout;
-    QPushButton *helpButton;
-    QPushButton *scoreButton;
-    QPushButton *quitButton;
     QGroupBox *roundCountBox;
     QLCDNumber *lcdRoundNumber;
+    QWidget *widget;
+    QGridLayout *gridLayout_2;
+    QPushButton *pauseButton;
+    QSpacerItem *verticalSpacer_2;
+    QPushButton *helpButton;
+    QSpacerItem *verticalSpacer;
+    QPushButton *quitButton;
     QMenuBar *menubar;
     QMenu *menuConnect;
     QMenu *menuPlay;
@@ -213,39 +215,6 @@ public:
         loadLabel->setFont(font2);
         loadLabel->setStyleSheet(QString::fromUtf8("color: white"));
         loadLabel->setAlignment(Qt::AlignCenter);
-        layoutWidget = new QWidget(centralwidget);
-        layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(50, 490, 111, 171));
-        LeftBottomLayout = new QVBoxLayout(layoutWidget);
-        LeftBottomLayout->setObjectName(QString::fromUtf8("LeftBottomLayout"));
-        LeftBottomLayout->setContentsMargins(0, 0, 0, 0);
-        helpButton = new QPushButton(layoutWidget);
-        helpButton->setObjectName(QString::fromUtf8("helpButton"));
-        helpButton->setFont(font2);
-        helpButton->setCursor(QCursor(Qt::PointingHandCursor));
-        helpButton->setStyleSheet(QString::fromUtf8("background-color:rgb(90, 183, 180);\n"
-"color:rgb(0, 0, 0);"));
-
-        LeftBottomLayout->addWidget(helpButton);
-
-        scoreButton = new QPushButton(layoutWidget);
-        scoreButton->setObjectName(QString::fromUtf8("scoreButton"));
-        scoreButton->setFont(font2);
-        scoreButton->setCursor(QCursor(Qt::PointingHandCursor));
-        scoreButton->setStyleSheet(QString::fromUtf8("background-color:rgb(90, 183, 180);\n"
-"color:rgb(0, 0, 0);"));
-
-        LeftBottomLayout->addWidget(scoreButton);
-
-        quitButton = new QPushButton(layoutWidget);
-        quitButton->setObjectName(QString::fromUtf8("quitButton"));
-        quitButton->setFont(font2);
-        quitButton->setCursor(QCursor(Qt::PointingHandCursor));
-        quitButton->setStyleSheet(QString::fromUtf8("background-color:rgb(90, 183, 180);\n"
-"color:rgb(0, 0, 0);"));
-
-        LeftBottomLayout->addWidget(quitButton);
-
         roundCountBox = new QGroupBox(centralwidget);
         roundCountBox->setObjectName(QString::fromUtf8("roundCountBox"));
         roundCountBox->setGeometry(QRect(240, 470, 121, 101));
@@ -259,10 +228,51 @@ public:
         lcdRoundNumber->setObjectName(QString::fromUtf8("lcdRoundNumber"));
         lcdRoundNumber->setGeometry(QRect(10, 30, 101, 61));
         lcdRoundNumber->setLayoutDirection(Qt::LeftToRight);
+        widget = new QWidget(centralwidget);
+        widget->setObjectName(QString::fromUtf8("widget"));
+        widget->setGeometry(QRect(40, 510, 82, 132));
+        gridLayout_2 = new QGridLayout(widget);
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
+        gridLayout_2->setContentsMargins(0, 0, 0, 0);
+        pauseButton = new QPushButton(widget);
+        pauseButton->setObjectName(QString::fromUtf8("pauseButton"));
+        pauseButton->setFont(font2);
+        pauseButton->setCursor(QCursor(Qt::PointingHandCursor));
+        pauseButton->setStyleSheet(QString::fromUtf8("background-color:rgb(90, 183, 180);\n"
+"color:rgb(0, 0, 0);"));
+
+        gridLayout_2->addWidget(pauseButton, 0, 0, 1, 1);
+
+        verticalSpacer_2 = new QSpacerItem(20, 18, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout_2->addItem(verticalSpacer_2, 1, 0, 1, 1);
+
+        helpButton = new QPushButton(widget);
+        helpButton->setObjectName(QString::fromUtf8("helpButton"));
+        helpButton->setFont(font2);
+        helpButton->setCursor(QCursor(Qt::PointingHandCursor));
+        helpButton->setStyleSheet(QString::fromUtf8("background-color:rgb(90, 183, 180);\n"
+"color:rgb(0, 0, 0);"));
+
+        gridLayout_2->addWidget(helpButton, 2, 0, 1, 1);
+
+        verticalSpacer = new QSpacerItem(20, 18, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout_2->addItem(verticalSpacer, 3, 0, 1, 1);
+
+        quitButton = new QPushButton(widget);
+        quitButton->setObjectName(QString::fromUtf8("quitButton"));
+        quitButton->setFont(font2);
+        quitButton->setCursor(QCursor(Qt::PointingHandCursor));
+        quitButton->setStyleSheet(QString::fromUtf8("background-color:rgb(90, 183, 180);\n"
+"color:rgb(0, 0, 0);"));
+
+        gridLayout_2->addWidget(quitButton, 4, 0, 1, 1);
+
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 675, 17));
+        menubar->setGeometry(QRect(0, 0, 675, 21));
         menuConnect = new QMenu(menubar);
         menuConnect->setObjectName(QString::fromUtf8("menuConnect"));
         menuConnect->setCursor(QCursor(Qt::ArrowCursor));
@@ -312,10 +322,10 @@ public:
         MyBall->setText(QCoreApplication::translate("MainWindow", "MyBall", nullptr));
         EnemyBall->setText(QCoreApplication::translate("MainWindow", "EnemyBall", nullptr));
         loadLabel->setText(QCoreApplication::translate("MainWindow", "Loading...", nullptr));
-        helpButton->setText(QCoreApplication::translate("MainWindow", "Help", nullptr));
-        scoreButton->setText(QCoreApplication::translate("MainWindow", "Score", nullptr));
-        quitButton->setText(QCoreApplication::translate("MainWindow", "Quit", nullptr));
         roundCountBox->setTitle(QCoreApplication::translate("MainWindow", "Round:", nullptr));
+        pauseButton->setText(QCoreApplication::translate("MainWindow", "Pause", nullptr));
+        helpButton->setText(QCoreApplication::translate("MainWindow", "Help", nullptr));
+        quitButton->setText(QCoreApplication::translate("MainWindow", "Quit", nullptr));
         menuConnect->setTitle(QCoreApplication::translate("MainWindow", "Connect", nullptr));
         menuPlay->setTitle(QCoreApplication::translate("MainWindow", "Play", nullptr));
     } // retranslateUi

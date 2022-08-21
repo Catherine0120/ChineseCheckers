@@ -6,6 +6,7 @@
 #include "admitdefeatdialog.h"
 #include "enemywindialog.h"
 #include "mewindialog.h"
+#include "helpdialog.h"
 
 #include <algorithm>
 #include <QPainter>
@@ -35,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     pS = new PlayDialog(this);
     pE = new EnemyWinDialog(this);
     pM = new MeWinDialog(this);
+    pH = new HelpDialog(this);
 
     pServer = new connectserver(this);
 
@@ -73,6 +75,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(pServer, SIGNAL(updateRound(int)), this, SLOT(setRound(int)));
 
     connect(pServer, SIGNAL(messageReceived(int,int,int)), this, SLOT(parseMessageReceived(int, int, int)));
+    connect(pServer, SIGNAL(EnemyAdmitDefeat()), this, SLOT(onEnemyAdmitDefeat()));
+
+    connect(pServer, SIGNAL(enemyPause()), this, SLOT(onEnemyPause()));
+    connect(pServer, SIGNAL(enemyStopPause()), this, SLOT(onEnemyStopPause()));
 
     connect(this, SIGNAL(endMyRound()), this, SLOT(onMyRoundEnd()));
     connect(this, SIGNAL(packageReady()), this, SLOT(sendPackageToServer()));
@@ -438,6 +444,7 @@ void MainWindow::judge_admit_defeat() {
     }
     else {
         pD->close();
+        pServer->webSocket->sendTextMessage("I admit defeat");
         emit EnemyWin();
     }
 }
@@ -461,6 +468,22 @@ void MainWindow::setEnemyTime(int time) {
 
 void MainWindow::setRound(int round) {
     ui->lcdRoundNumber->display(round);
+    if ((round == 20 && countMyChessMyCamp() > 5)
+            || (round == 25 && countMyChessMyCamp() > 2)
+            || (round == 30 && countMyChessMyCamp() != 0)) {
+        displayEnemyWin();
+        int requirement;
+        switch(round) {
+            case(20):
+                requirement = 5; break;
+            case(25):
+                requirement = 8; break;
+            case(30):
+                requirement = 10; break;
+        }
+        pServer->webSocket->sendTextMessage(QString("Round [%1] < [%2] chesses away from MyCamp")
+                                            .arg(QString::number(round).arg((QString::number(requirement)))));
+    }
 }
 
 void MainWindow::sendPackageToServer() {
@@ -481,6 +504,43 @@ void MainWindow::parseMessageReceived(int origin_pos, int arrival_pos, int chess
     chessesplayed[chess_label].y = chessboard[arrival_pos].y;
     chessesplayed[chess_label].chessboardlabel = arrival_pos;
     if (countEnemyChessMyCamp()) emit EnemyWin();
+}
+
+void MainWindow::onEnemyAdmitDefeat() {
+    QMessageBox::information(this, "info", "Your enemy has admitted defeat.");
+    pM->setWindowModality(Qt::ApplicationModal);
+    pM->show();
+    chessselected = -1;
+}
+
+void MainWindow::on_helpButton_clicked()
+{
+    pH->show();
+}
+
+void MainWindow::on_pauseButton_clicked()
+{
+    if (!isPause) {
+        pServer->webSocket->sendTextMessage("[Sender]: Pause");
+        QMessageBox::information(this, "Pause", "You can pause for less than 60 secs");
+        ui->pauseButton->setText("Continue");
+        isPause = true;
+    }
+    else {
+        pServer->webSocket->sendTextMessage("[Sender]: Stop Pause");
+        ui->pauseButton->setText("Pause");
+        isPause = false;
+    }
+}
+
+void MainWindow::onEnemyPause() {
+    isPause = true;
+    ui->pauseButton->setText("Continue");
+}
+
+void MainWindow::onEnemyStopPause() {
+    isPause = false;
+    ui->pauseButton->setText("Pause");
 }
 
 
@@ -752,9 +812,6 @@ void MainWindow::bfs(int pos) {
     while (q.size()) {
         int t = q.front();
         std::vector<int> pos_feasible_set = prepare_bfs_function(t);
-//        qDebug() << "pos = " << t << ": ----------";
-//        for (size_t i = 0; i < pos_feasible_set.size(); ++i) qDebug() << pos_feasible_set[i];
-//        qDebug() << "---------";
         q.pop();
         if (pos_feasible_set.size() == 0) continue;
         for (size_t i = 0; i < pos_feasible_set.size(); ++i) {
@@ -854,3 +911,4 @@ bool MainWindow::countEnemyChessMyCamp() {
     }
     return true;
 }
+

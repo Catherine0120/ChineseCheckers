@@ -50,6 +50,12 @@ signals:
 
     void messageReceived(int, int, int);
 
+    void EnemyAdmitDefeat();
+
+    void enemyPause();
+
+    void enemyStopPause();
+
 private:
     Ui::connectserver *ui;
 };

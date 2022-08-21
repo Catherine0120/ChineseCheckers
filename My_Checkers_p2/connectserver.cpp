@@ -44,6 +44,7 @@ void connectserver::outputMessageReceived(QString str) {
         ui->textEdit->append("[Server]: " + str);
         connectedToServer = true;
     }
+
     else if (str.left(15) == "Start Permitted") {
         ui->textEdit->append("[Server]: Game Starts Now!");
         if (str == "Start Permitted, you go first") emit startPermitted(true);
@@ -52,14 +53,17 @@ void connectserver::outputMessageReceived(QString str) {
             emit startPermitted(false);
         }
     }
+
     else if (str == "Please select another color") {
         emit changeColor();
         ui->textEdit->append("[Server]: Select another color, please");
     }
+
     else if (str.left(18) == "Enemy's BallColor=") {
         enemyColor = str.mid(18).toInt();
         emit getEnemyColor();
     }
+
     else if (str == "Enemy disconnected") {
         ui->textEdit->append("[Server]: Enemy disconnected");
         QMessageBox::warning(this, "Warning", "Enemy disconnected");
@@ -96,6 +100,20 @@ void connectserver::outputMessageReceived(QString str) {
         assert(origin_pos != -1 && arrival_pos != -1 && chess_label != -1);
         emit messageReceived(origin_pos, arrival_pos, chess_label);
         }
+
+    else if (str == "Enemy admit defeat. You win!") {
+        emit EnemyAdmitDefeat();
+    }
+
+    else if (str == "Enemy Pause") {
+        ui->textEdit->append("Enemy Pause...Please wait...");
+        emit enemyPause();
+    }
+
+    else if (str == "Enemy Stop Pause") {
+        ui->textEdit->append("Enemy Stop Pause...Please continue...");
+        emit enemyStopPause();
+    }
 }
 
 void connectserver::on_disconnectButton_clicked()
