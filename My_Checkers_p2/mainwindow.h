@@ -10,6 +10,9 @@
 #include <QTimer>
 #include <vector>
 #include <QWebSocket>
+#include <QJsonDocument>
+#include <QJsonObject>
+
 #include "chess.h"
 #include "enemywindialog.h"
 #include "mewindialog.h"
@@ -66,6 +69,8 @@ public:
     bool countMyChessEnemyCamp();
     bool countEnemyChessMyCamp();
 
+    QString JsonToString(QJsonDocument package);
+
 private slots:
     void on_redColor_clicked();
 
@@ -99,20 +104,6 @@ private slots:
 
     void on_startButton_clicked();
 
-    void myTimerSlotStart();
-
-    void myLCDCount();
-
-    void enemyTimerSlotStart();
-
-    void enemyLCDCount();
-
-    void roundLCDIncrease();
-
-    void myLCDend();
-
-    void enemyLCDend();
-
     void displayEnemyWin();
 
     void displayMeWin();
@@ -122,6 +113,18 @@ private slots:
     void onChangeColor();
 
     void setEnemyColor();
+
+    void setMyTime(int);
+
+    void setEnemyTime(int);
+
+    void setRound(int);
+
+    void onMyRoundEnd();
+
+    void sendPackageToServer();
+
+    void parseMessageReceived(int, int, int);
 
 signals:
     void mouseMove(QMouseEvent *event);
@@ -134,11 +137,11 @@ signals:
 
     void endMyRound();
 
-    void endEnemyRound();
-
     void EnemyWin();
 
     void MeWin();
+
+    void packageReady();
 
 private:
     Ui::MainWindow *ui;
@@ -165,9 +168,6 @@ private:
         1, 2, 3, 4, 13, 12, 11, 10, 9, 10, 11, 12, 13, 4, 3, 2, 1
     };
 
-    QTimer * myTimer;
-    QTimer * enemyTimer;
-
     EnemyWinDialog * pE;
     MeWinDialog * pM;
     AdmitDefeatDialog * pD;
@@ -177,6 +177,9 @@ private:
 
     int meRunTime = 0;
     int enemyRunTime = 0;
+
+    QJsonDocument send_package;
+    QJsonObject json_obj;
 
 };
 

@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_connectserver_t {
-    const uint offsetsAndSize[20];
-    char stringdata0[162];
+    const uint offsetsAndSize[28];
+    char stringdata0[219];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(offsetof(qt_meta_stringdata_connectserver_t, stringdata0) + ofs), len 
@@ -35,15 +35,20 @@ QT_MOC_LITERAL(29, 0), // ""
 QT_MOC_LITERAL(30, 11), // "changeColor"
 QT_MOC_LITERAL(42, 13), // "getEnemyColor"
 QT_MOC_LITERAL(56, 7), // "endGame"
-QT_MOC_LITERAL(64, 21), // "outputMessageReceived"
-QT_MOC_LITERAL(86, 24), // "on_connectButton_clicked"
-QT_MOC_LITERAL(111, 27), // "on_disconnectButton_clicked"
-QT_MOC_LITERAL(139, 22) // "on_closeButton_clicked"
+QT_MOC_LITERAL(64, 12), // "updateMyTime"
+QT_MOC_LITERAL(77, 15), // "updateEnemyTime"
+QT_MOC_LITERAL(93, 11), // "updateRound"
+QT_MOC_LITERAL(105, 15), // "messageReceived"
+QT_MOC_LITERAL(121, 21), // "outputMessageReceived"
+QT_MOC_LITERAL(143, 24), // "on_connectButton_clicked"
+QT_MOC_LITERAL(168, 27), // "on_disconnectButton_clicked"
+QT_MOC_LITERAL(196, 22) // "on_closeButton_clicked"
 
     },
     "connectserver\0startPermitted\0\0changeColor\0"
-    "getEnemyColor\0endGame\0outputMessageReceived\0"
-    "on_connectButton_clicked\0"
+    "getEnemyColor\0endGame\0updateMyTime\0"
+    "updateEnemyTime\0updateRound\0messageReceived\0"
+    "outputMessageReceived\0on_connectButton_clicked\0"
     "on_disconnectButton_clicked\0"
     "on_closeButton_clicked"
 };
@@ -55,30 +60,38 @@ static const uint qt_meta_data_connectserver[] = {
       10,       // revision
        0,       // classname
        0,    0, // classinfo
-       8,   14, // methods
+      12,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       4,       // signalCount
+       8,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    1,   62,    2, 0x06,    1 /* Public */,
-       3,    0,   65,    2, 0x06,    3 /* Public */,
-       4,    0,   66,    2, 0x06,    4 /* Public */,
-       5,    0,   67,    2, 0x06,    5 /* Public */,
+       1,    1,   86,    2, 0x06,    1 /* Public */,
+       3,    0,   89,    2, 0x06,    3 /* Public */,
+       4,    0,   90,    2, 0x06,    4 /* Public */,
+       5,    0,   91,    2, 0x06,    5 /* Public */,
+       6,    1,   92,    2, 0x06,    6 /* Public */,
+       7,    1,   95,    2, 0x06,    8 /* Public */,
+       8,    1,   98,    2, 0x06,   10 /* Public */,
+       9,    3,  101,    2, 0x06,   12 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       6,    1,   68,    2, 0x08,    6 /* Private */,
-       7,    0,   71,    2, 0x08,    8 /* Private */,
-       8,    0,   72,    2, 0x08,    9 /* Private */,
-       9,    0,   73,    2, 0x08,   10 /* Private */,
+      10,    1,  108,    2, 0x08,   16 /* Private */,
+      11,    0,  111,    2, 0x08,   18 /* Private */,
+      12,    0,  112,    2, 0x08,   19 /* Private */,
+      13,    0,  113,    2, 0x08,   20 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Bool,    2,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,    2,
+    QMetaType::Void, QMetaType::Int,    2,
+    QMetaType::Void, QMetaType::Int,    2,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::Int,    2,    2,    2,
 
  // slots: parameters
     QMetaType::Void, QMetaType::QString,    2,
@@ -99,10 +112,14 @@ void connectserver::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         case 1: _t->changeColor(); break;
         case 2: _t->getEnemyColor(); break;
         case 3: _t->endGame(); break;
-        case 4: _t->outputMessageReceived((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
-        case 5: _t->on_connectButton_clicked(); break;
-        case 6: _t->on_disconnectButton_clicked(); break;
-        case 7: _t->on_closeButton_clicked(); break;
+        case 4: _t->updateMyTime((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 5: _t->updateEnemyTime((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 6: _t->updateRound((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 7: _t->messageReceived((*reinterpret_cast< std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[3]))); break;
+        case 8: _t->outputMessageReceived((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 9: _t->on_connectButton_clicked(); break;
+        case 10: _t->on_disconnectButton_clicked(); break;
+        case 11: _t->on_closeButton_clicked(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -135,6 +152,34 @@ void connectserver::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
                 return;
             }
         }
+        {
+            using _t = void (connectserver::*)(int );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&connectserver::updateMyTime)) {
+                *result = 4;
+                return;
+            }
+        }
+        {
+            using _t = void (connectserver::*)(int );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&connectserver::updateEnemyTime)) {
+                *result = 5;
+                return;
+            }
+        }
+        {
+            using _t = void (connectserver::*)(int );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&connectserver::updateRound)) {
+                *result = 6;
+                return;
+            }
+        }
+        {
+            using _t = void (connectserver::*)(int , int , int );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&connectserver::messageReceived)) {
+                *result = 7;
+                return;
+            }
+        }
     }
 }
 
@@ -145,7 +190,7 @@ const QMetaObject connectserver::staticMetaObject = { {
     qt_static_metacall,
     nullptr,
 qt_incomplete_metaTypeArray<qt_meta_stringdata_connectserver_t
-, QtPrivate::TypeAndForceComplete<connectserver, std::true_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<bool, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>
+, QtPrivate::TypeAndForceComplete<connectserver, std::true_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<bool, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<int, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<int, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<int, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<int, std::false_type>, QtPrivate::TypeAndForceComplete<int, std::false_type>, QtPrivate::TypeAndForceComplete<int, std::false_type>
 , QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<QString, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>, QtPrivate::TypeAndForceComplete<void, std::false_type>
 
 
@@ -173,13 +218,13 @@ int connectserver::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 8)
+        if (_id < 12)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 12;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 8)
+        if (_id < 12)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 8;
+        _id -= 12;
     }
     return _id;
 }
@@ -207,6 +252,34 @@ void connectserver::getEnemyColor()
 void connectserver::endGame()
 {
     QMetaObject::activate(this, &staticMetaObject, 3, nullptr);
+}
+
+// SIGNAL 4
+void connectserver::updateMyTime(int _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 4, _a);
+}
+
+// SIGNAL 5
+void connectserver::updateEnemyTime(int _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 5, _a);
+}
+
+// SIGNAL 6
+void connectserver::updateRound(int _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 6, _a);
+}
+
+// SIGNAL 7
+void connectserver::messageReceived(int _t1, int _t2, int _t3)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t3))) };
+    QMetaObject::activate(this, &staticMetaObject, 7, _a);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

@@ -5,6 +5,10 @@
 #include <QMessageBox>
 #include <QTime>
 #include <QCoreApplication>
+#include <QString>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QStringList>
 
 connectserver::connectserver(QWidget *parent) :
     QDialog(parent),
@@ -35,6 +39,7 @@ void connectserver::on_connectButton_clicked() {
 }
 
 void connectserver::outputMessageReceived(QString str) {
+    //preparation for the game
     if (str == "Connected Successfully") {
         ui->textEdit->append("[Server]: " + str);
         connectedToServer = true;
@@ -53,7 +58,6 @@ void connectserver::outputMessageReceived(QString str) {
     }
     else if (str.left(18) == "Enemy's BallColor=") {
         enemyColor = str.mid(18).toInt();
-        qDebug() << "eneymeColor = " << enemyColor;
         emit getEnemyColor();
     }
     else if (str == "Enemy disconnected") {
@@ -61,6 +65,37 @@ void connectserver::outputMessageReceived(QString str) {
         QMessageBox::warning(this, "Warning", "Enemy disconnected");
         emit endGame();
     }
+
+    //timer
+    else if (str.left(3) == "Set") {
+//        ui->textEdit->append("[Timing/Round]: " + str);
+        if (str.left(15) == "Set YourTime = ") {
+            emit updateMyTime(str.mid(15).toInt());
+        }
+        else if (str.left(16) == "Set EnemyTime = ") {
+           emit updateEnemyTime(str.mid(16).toInt());
+        }
+        else if (str.left(12) == "Set Round = ") {
+            emit updateRound(str.mid(12).toInt());
+        }
+    }
+
+    //package
+    else if (str.left(11) == "[Package]: ") {
+        int origin_pos = -1;
+        int arrival_pos = -1;
+        int chess_label = -1;
+        QString message = str.mid(11);
+        QJsonObject jsonMessage = QstringToJson(message);
+        const QStringList &keys = jsonMessage.keys();
+        for (const QString &key : keys) {
+            if (key == "origin_pos") origin_pos = jsonMessage.value(key).toInt();
+            else if (key == "arrival_pos") arrival_pos = jsonMessage.value(key).toInt();
+            else if (key == "chess_label") chess_label = jsonMessage.value(key).toInt();
+            }
+        assert(origin_pos != -1 && arrival_pos != -1 && chess_label != -1);
+        emit messageReceived(origin_pos, arrival_pos, chess_label);
+        }
 }
 
 void connectserver::on_disconnectButton_clicked()
@@ -85,3 +120,11 @@ void connectserver::on_closeButton_clicked()
     this->close();
 }
 
+QJsonObject connectserver::QstringToJson(QString message) {
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(message.toLocal8Bit().data());
+    if (jsonDocument.isNull()) {
+        ui->textEdit->append("[Error]: package from client is empty");
+    }
+    QJsonObject json_obj = jsonDocument.object();
+    return json_obj;
+}

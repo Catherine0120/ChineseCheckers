@@ -22,6 +22,8 @@ public:
 
     int enemyColor = -1;
 
+    QJsonObject QstringToJson(QString message);
+
 private slots:
     void outputMessageReceived(QString);
 
@@ -39,6 +41,14 @@ signals:
     void getEnemyColor();
 
     void endGame();
+
+    void updateMyTime(int);
+
+    void updateEnemyTime(int);
+
+    void updateRound(int);
+
+    void messageReceived(int, int, int);
 
 private:
     Ui::connectserver *ui;

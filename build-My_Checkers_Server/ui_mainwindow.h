@@ -43,7 +43,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(444, 284);
+        MainWindow->resize(624, 543);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         gridLayout = new QGridLayout(centralwidget);
@@ -94,7 +94,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 444, 17));
+        menubar->setGeometry(QRect(0, 0, 624, 21));
         menuMy_Checker_Server = new QMenu(menubar);
         menuMy_Checker_Server->setObjectName(QString::fromUtf8("menuMy_Checker_Server"));
         MainWindow->setMenuBar(menubar);

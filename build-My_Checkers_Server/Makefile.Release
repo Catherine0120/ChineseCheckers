@@ -278,6 +278,10 @@ release/moc_mainwindow.cpp: ../My_Checkers_Server/mainwindow.h \
 		../../../../Qt/6.3.1/mingw_64/include/QtWebSockets/QWebSocketServer \
 		../../../../Qt/6.3.1/mingw_64/include/QtWebSockets/qwebsocketserver.h \
 		../../../../Qt/6.3.1/mingw_64/include/QtNetwork/QHostAddress \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/QTime \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/QTimer \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qtimer.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qbasictimer.h \
 		release/moc_predefs.h \
 		../../../../Qt/6.3.1/mingw_64/bin/moc.exe
 	C:\Qt\6.3.1\mingw_64\bin\moc.exe $(DEFINES) --include C:/Users/Catherine/Desktop/build-My_Checkers_Server/release/moc_predefs.h -IC:/Qt/6.3.1/mingw_64/mkspecs/win32-g++ -IC:/Users/Catherine/Desktop/My_Checkers_Server -IC:/Qt/6.3.1/mingw_64/include -IC:/Qt/6.3.1/mingw_64/include/QtWidgets -IC:/Qt/6.3.1/mingw_64/include/QtGui -IC:/Qt/6.3.1/mingw_64/include/QtWebSockets -IC:/Qt/6.3.1/mingw_64/include/QtNetwork -IC:/Qt/6.3.1/mingw_64/include/QtCore -I. -IC:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -IC:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -IC:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -IC:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -IC:/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -IC:/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\My_Checkers_Server\mainwindow.h -o release\moc_mainwindow.cpp
@@ -475,6 +479,10 @@ release/main.o: ../My_Checkers_Server/main.cpp ../My_Checkers_Server/mainwindow.
 		../../../../Qt/6.3.1/mingw_64/include/QtWebSockets/QWebSocketServer \
 		../../../../Qt/6.3.1/mingw_64/include/QtWebSockets/qwebsocketserver.h \
 		../../../../Qt/6.3.1/mingw_64/include/QtNetwork/QHostAddress \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/QTime \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/QTimer \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qtimer.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qbasictimer.h \
 		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QApplication \
 		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qapplication.h \
 		../../../../Qt/6.3.1/mingw_64/include/QtCore/qcoreapplication.h \
@@ -667,58 +675,15 @@ release/mainwindow.o: ../My_Checkers_Server/mainwindow.cpp ../My_Checkers_Server
 		../../../../Qt/6.3.1/mingw_64/include/QtWebSockets/QWebSocketServer \
 		../../../../Qt/6.3.1/mingw_64/include/QtWebSockets/qwebsocketserver.h \
 		../../../../Qt/6.3.1/mingw_64/include/QtNetwork/QHostAddress \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/QTime \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/QTimer \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qtimer.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qbasictimer.h \
 		ui_mainwindow.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtGui/QAction \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QApplication \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qapplication.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qcoreapplication.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qeventloop.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qcoreapplication_platform.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfuture.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfutureinterface.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qmutex.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qresultstore.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qfuture_impl.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qthreadpool.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qthread.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qdeadlinetimer.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qelapsedtimer.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qrunnable.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qexception.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtCore/qpromise.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtGui/qguiapplication.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtGui/qinputmethod.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtGui/qguiapplication_platform.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QGridLayout \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qgridlayout.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlayout.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlayoutitem.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qboxlayout.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QLabel \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qlabel.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qframe.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtGui/qpicture.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtGui/qtextdocument.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QMenu \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qmenu.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QMenuBar \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qmenubar.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QPushButton \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qpushbutton.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qabstractbutton.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QSpacerItem \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QStatusBar \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qstatusbar.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QTextEdit \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qtextedit.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtGui/qtextoption.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtGui/qtextcursor.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtGui/qtextformat.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtGui/qpen.h \
-		../../../../Qt/6.3.1/mingw_64/include/QtWidgets/QWidget \
 		../../../../Qt/6.3.1/mingw_64/include/QtNetwork/QNetworkInterface \
-		../../../../Qt/6.3.1/mingw_64/include/QtNetwork/qnetworkinterface.h
+		../../../../Qt/6.3.1/mingw_64/include/QtNetwork/qnetworkinterface.h \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/qDebug \
+		../../../../Qt/6.3.1/mingw_64/include/QtCore/QtGlobal
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\mainwindow.o ..\My_Checkers_Server\mainwindow.cpp
 
 release/moc_mainwindow.o: release/moc_mainwindow.cpp 

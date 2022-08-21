@@ -5,6 +5,9 @@
 #include <QWebSocket>
 #include <QWebSocketServer>
 #include <QString>
+#include <QTime>
+#include <QTimer>
+#include <QJsonObject>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,9 +21,22 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    bool gameStarted = false;
+
+    QTimer *earlyTimer;
+    QTimer *lateTimer;
+
+    int goFirst = -1;
+
+    int earlyLCD, lateLCD;
+    int earlyClientRunTime = 0;
+    int lateClientRunTime = 0;
+
+    int LCDRoundNumber = 1;
+
     QString getLocalIP();
 
-    bool gameStarted = false;
+//    QJsonObject QstringToJson(QString message);
 
 private slots:
     void onNewConnection();
@@ -28,6 +44,43 @@ private slots:
     void onTextMessageReceived(QString str="");
 
     void onDisconnected();
+
+    void earlyTimerStart();
+
+    void earlyLCDCount();
+
+    void lateTimerStart();
+
+    void lateLCDCount();
+
+    void roundLCDUpdate();
+
+//    void earlyLCDend();
+
+//    void lateLCDend();
+
+    void earlyClientTimeUpdate();
+
+    void lateClientTimeUpdate();
+
+    void timeMachineRunning();
+
+signals:
+    void startTiming();
+
+    void startEarlyTimer();
+
+    void startLateTimer();
+
+    void increaseRoundNumber();
+
+//    void endEarlyRound();
+
+//    void endLateRound();
+
+    void earlyLCDupdate();
+
+    void lateLCDupdate();
 
 private:
     Ui::MainWindow *ui;

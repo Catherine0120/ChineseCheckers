@@ -22,6 +22,8 @@
 #include <queue>
 #include <QMessageBox>
 #include <QProcess>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -39,18 +41,6 @@ MainWindow::MainWindow(QWidget *parent)
     background = QPixmap("../images/BackgroundPlain.png");
 
     ui->lcdRoundNumber->display(1);
-
-    //设置计时器
-    myTimer = new QTimer(this);
-    enemyTimer = new QTimer(this);
-    connect(this, SIGNAL(startMyTimer()), this, SLOT(myTimerSlotStart()));
-    connect(myTimer, SIGNAL(timeout()), this, SLOT(myLCDCount()));
-    connect(this, SIGNAL(startEnemyTimer()), this, SLOT(enemyTimerSlotStart()));
-    connect(enemyTimer, SIGNAL(timeout()), this, SLOT(enemyLCDCount()));
-
-    connect(this, SIGNAL(increaseRoundNumber()), this, SLOT(roundLCDIncrease()));
-    connect(this, SIGNAL(endMyRound()), this, SLOT(myLCDend()));
-    connect(this, SIGNAL(endEnemyRound()), this, SLOT(enemyLCDend()));
 
     //判断回合走棋规则
     connect(this, SIGNAL(EnemyWin()), this, SLOT(displayEnemyWin()));
@@ -77,6 +67,15 @@ MainWindow::MainWindow(QWidget *parent)
     connect(pServer, SIGNAL(changeColor()), this, SLOT(onChangeColor()));
     connect(pServer, SIGNAL(getEnemyColor()), this, SLOT(setEnemyColor()));
     connect(pServer, SIGNAL(endGame()), this, SLOT(start_new_page()));
+
+    connect(pServer, SIGNAL(updateMyTime(int)), this, SLOT(setMyTime(int)));
+    connect(pServer, SIGNAL(updateEnemyTime(int)), this, SLOT(setEnemyTime(int)));
+    connect(pServer, SIGNAL(updateRound(int)), this, SLOT(setRound(int)));
+
+    connect(pServer, SIGNAL(messageReceived(int,int,int)), this, SLOT(parseMessageReceived(int, int, int)));
+
+    connect(this, SIGNAL(endMyRound()), this, SLOT(onMyRoundEnd()));
+    connect(this, SIGNAL(packageReady()), this, SLOT(sendPackageToServer()));
 
     ui->ballImage->hide();
     ui->ColorBox->setStyleSheet("QGroupBox{border:none}");
@@ -137,6 +136,61 @@ void MainWindow::paintEventChessBoard(QPainter & p) {
 
 void MainWindow::paintEventChessesPlayed(QPainter & p) {
     if (buttonstart) {
+
+        switch(myColor) {
+            case(0):
+                ui->MyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("red")));
+                pm_me = QPixmap("../images/red.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+                break;
+            case(1):
+                ui->MyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("yellow")));
+                pm_me = QPixmap("../images/yellow.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+                break;
+            case(2):
+                ui->MyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("green")));
+                pm_me = QPixmap("../images/green.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+                break;
+            case(3):
+                ui->MyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("blue")));
+                pm_me = QPixmap("../images/blue.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+                break;
+            case(4):
+                ui->MyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("purple")));
+                pm_me = QPixmap("../images/purple.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+                break;
+            case(5):
+                ui->MyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("pink")));
+                pm_me = QPixmap("../images/pink.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+                break;
+        }
+
+        switch(enemyColor) {
+            case(0):
+                ui->EnemyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("red")));
+                pm_enemy = QPixmap("../images/red.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+                break;
+            case(1):
+                ui->EnemyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("yellow")));
+                pm_enemy = QPixmap("../images/yellow.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+                break;
+            case(2):
+                ui->EnemyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("green")));
+                pm_enemy = QPixmap("../images/green.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+                break;
+            case(3):
+                ui->EnemyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("blue")));
+                pm_enemy = QPixmap("../images/blue.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+                break;
+            case(4):
+                ui->EnemyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("purple")));
+                pm_enemy = QPixmap("../images/purple.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+                break;
+            case(5):
+                ui->EnemyBall->setPixmap(QPixmap(QString("../images/%1_small.png").arg("pink")));
+                pm_enemy = QPixmap("../images/pink.png").scaled(d_chess, d_chess, Qt::KeepAspectRatio);
+                break;
+        }
+
         for (int i = 0; i < chessesplayed.size(); ++i) {
             int grid_screen_x = get_grid_screen_x(chessesplayed[i]);
             int grid_screen_y = get_grid_screen_y(chessesplayed[i]);
@@ -173,11 +227,6 @@ void MainWindow::mouseMoveEvent(QMouseEvent * event) {
     else if(num == -1 || chessesplayed[num].side == ME) {
         this->setCursor(Qt::ArrowCursor);
     }
-    else if (num != -1 && chessesplayed[num].side == ENEMY
-             && (chessselected == num || chessselected == -1)
-             && ui->lcdNumberEnemy->value() > 0) {
-        this->setCursor(Qt::PointingHandCursor);
-    }
     else {
         this->setCursor(Qt::ArrowCursor);
     }
@@ -202,13 +251,8 @@ void MainWindow::mousePressEvent(QMouseEvent * event) {
         chessbeingmoved = &chessesplayed[num];
         chessesplayed[num].beingpressed = true;
     }
-    else if (num != -1 && chessesplayed[num].side == ENEMY
-             && (chessselected == num || chessselected == -1)
-             && ui->lcdNumberEnemy->value() > 0) {
-         this->setCursor(Qt::PointingHandCursor);
-         chessselected = num;
-         chessbeingmoved = &chessesplayed[num];
-         chessesplayed[num].beingpressed = true;
+    else {
+        this->setCursor(Qt::ArrowCursor);
      }
 }
 
@@ -238,22 +282,29 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event) {
         chessbeingmoved = nullptr;
     }
     else {
+        //信息打包发给server
+        json_obj = {
+            {"origin_pos", chessbeingmoved->chessboardlabel},
+            {"arrival_pos", num},
+            {"chess_label", chessbeingmoved->chesslabel}
+        };
+        send_package.setObject(json_obj);
+        emit packageReady();
+
         chessboard[chessbeingmoved->chessboardlabel].haschess = false;
         chessboard[chessbeingmoved->chessboardlabel].chesslabel = -1;
-        chessbeingmoved->beingpressed = false;
         chessbeingmoved->chessboardlabel = num;
         chessbeingmoved->x = chessboard[num].x;
         chessbeingmoved->y = chessboard[num].y;
         chessboard[num].haschess = true;
         chessboard[num].chesslabel = chessbeingmoved->chesslabel;
         chessselected = -1;
+        chessbeingmoved->beingpressed = false;
         if (chessbeingmoved->side == ME) emit endMyRound();
-        if (chessbeingmoved->side == ENEMY) emit endEnemyRound();
         chessbeingmoved = nullptr;
     }
 
     if (countMyChessEnemyCamp()) emit MeWin();
-    if (countEnemyChessMyCamp()) emit EnemyWin();
 }
 
 
@@ -400,6 +451,38 @@ void MainWindow::setEnemyColor() {
     enemyColor = pServer->enemyColor;
 }
 
+void MainWindow::setMyTime(int time) {
+    ui->lcdNumberYour->display(time);
+}
+
+void MainWindow::setEnemyTime(int time) {
+    ui->lcdNumberEnemy->display(time);
+}
+
+void MainWindow::setRound(int round) {
+    ui->lcdRoundNumber->display(round);
+}
+
+void MainWindow::sendPackageToServer() {
+    QString message = JsonToString(send_package);
+    pServer->webSocket->sendTextMessage("[Package]: " + message);
+}
+
+void MainWindow::parseMessageReceived(int origin_pos, int arrival_pos, int chess_label) {
+    // 对称变换origin_pos和arrival_pos
+    origin_pos = 120 - origin_pos;
+    arrival_pos = 120 - arrival_pos;
+    chess_label = chess_label - 10;
+    chessboard[origin_pos].haschess = false;
+    chessboard[origin_pos].chesslabel = -1;
+    chessboard[arrival_pos].haschess = true;
+    chessboard[arrival_pos].chesslabel = chess_label;
+    chessesplayed[chess_label].x = chessboard[arrival_pos].x;
+    chessesplayed[chess_label].y = chessboard[arrival_pos].y;
+    chessesplayed[chess_label].chessboardlabel = arrival_pos;
+    if (countEnemyChessMyCamp()) emit EnemyWin();
+}
+
 
 //StartButton:
 void MainWindow::on_startButton_clicked()
@@ -463,18 +546,6 @@ void MainWindow::startGame(bool flag) {
     ui->GameInfoBox->show();
     ui->roundCountBox->show();
     ui->lcdRoundNumber->show();
-
-    if (flag) {
-        ui->lcdNumberYour->display(20);
-        ui->lcdNumberEnemy->display(0);
-        emit startMyTimer();
-    }
-
-    else {
-        ui->lcdNumberEnemy->display(20);
-        ui->lcdNumberYour->display(0);
-        emit startEnemyTimer();
-    }
 
     switch(myColor) {
         case(0):
@@ -551,6 +622,7 @@ void MainWindow::startGame(bool flag) {
     }
 
 }
+
 
 //Functions:
 int MainWindow::get_grid_screen_x(Chess chess) {
@@ -629,6 +701,12 @@ int MainWindow::countEnemyChessEnemyCamp() {
             cnt++;
     }
     return cnt;
+}
+
+QString MainWindow::JsonToString(QJsonDocument package) {
+    QByteArray simpbyte_array = package.toJson(QJsonDocument::Compact);
+    QString simpjson_str(simpbyte_array);
+    return simpjson_str;
 }
 
 
@@ -741,151 +819,21 @@ std::vector<int> MainWindow::prepare_bfs_function(int start) {
 }
 
 
-//LCD-Timer
-void MainWindow::myTimerSlotStart() {
-    myTimer->start(1000);
-}
-
-void MainWindow::myLCDCount() {
-    int nowsec = ui->lcdNumberYour->value();
-    if (nowsec != 1) {
-        nowsec--;
-        ui->lcdNumberYour->display(nowsec);
-        emit startMyTimer();
-    }
-    else {
-        meRunTime++;
-        if (meRunTime == 3) emit EnemyWin();
-        if ((int)(ui->lcdRoundNumber->value()) == 20
-            && countMyChessMyCamp() > 5) {
-            emit EnemyWin();
-            return;
-        }
-        if ((int)(ui->lcdRoundNumber->value()) == 25
-            && countMyChessMyCamp() > 2) {
-            emit EnemyWin();
-            return;
-        }
-        if ((int)(ui->lcdRoundNumber->value()) == 30
-            && countMyChessMyCamp() != 0) {
-            emit EnemyWin();
-            return;
-        }
-        if (!IGoFirst) emit increaseRoundNumber();
-        chessselected = -1;
-        ui->lcdNumberEnemy->display(20);
-        emit startEnemyTimer();
-        ui->lcdNumberYour->display(0);
-        myTimer->stop();
-    }
-}
-
-void MainWindow::enemyTimerSlotStart() {
-    enemyTimer->start(1000);
-}
-
-void MainWindow::enemyLCDCount() {
-    int nowsec = ui->lcdNumberEnemy->value();
-    if (nowsec != 1) {
-        nowsec--;
-        ui->lcdNumberEnemy->display(nowsec);
-        emit startEnemyTimer();
-    }
-    else {
-        enemyRunTime++;
-        if (enemyRunTime == 3) emit MeWin();
-        if ((int)(ui->lcdRoundNumber->value()) == 20
-            && countEnemyChessEnemyCamp() > 5) {
-            emit MeWin();
-            return;
-        }
-        if ((int)(ui->lcdRoundNumber->value()) == 25
-            && countEnemyChessEnemyCamp() > 2) {
-            emit MeWin();
-            return;
-        }
-        if ((int)(ui->lcdRoundNumber->value()) == 30
-            && countEnemyChessEnemyCamp() != 0) {
-            emit MeWin();
-            return;
-        }
-        if (IGoFirst) emit increaseRoundNumber();
-        chessselected = -1;
-        ui->lcdNumberYour->display(20);
-        emit startMyTimer();
-        ui->lcdNumberEnemy->display(0);
-        enemyTimer->stop();
-    }
-}
-
-void MainWindow::roundLCDIncrease() {
-    int getNum = ui->lcdRoundNumber->value();
-    getNum++;
-    ui->lcdRoundNumber->display(getNum);
-}
-
-void MainWindow::myLCDend() {
-    if ((int)(ui->lcdRoundNumber->value()) == 20
-        && countMyChessMyCamp() > 5) {
-        emit EnemyWin();
-        return;
-    }
-    if ((int)(ui->lcdRoundNumber->value()) == 25
-        && countMyChessMyCamp() > 2) {
-        emit EnemyWin();
-        return;
-    }
-    if ((int)(ui->lcdRoundNumber->value()) == 30
-        && countMyChessMyCamp() != 0) {
-        emit EnemyWin();
-        return;
-    }
-    ui->lcdNumberYour->display(0);
-    myTimer->stop();
-    chessselected = -1;
-    ui->lcdNumberEnemy->display(20);
-    emit startEnemyTimer();
-}
-
-void MainWindow::enemyLCDend() {
-    if ((int)(ui->lcdRoundNumber->value()) == 20
-        && countEnemyChessEnemyCamp() > 5) {
-        emit MeWin();
-        return;
-    }
-    if ((int)(ui->lcdRoundNumber->value()) == 25
-        && countEnemyChessEnemyCamp() > 2) {
-        emit MeWin();
-        return;
-    }
-    if ((int)(ui->lcdRoundNumber->value()) == 30
-        && countEnemyChessEnemyCamp() != 0) {
-        emit MeWin();
-        return;
-    }
-    ui->lcdNumberEnemy->display(0);
-    enemyTimer->stop();
-    chessselected = -1;
-    ui->lcdNumberYour->display(20);
-    emit increaseRoundNumber();
-    emit startMyTimer();
-}
-
-
 //Win or Lose
+void MainWindow::onMyRoundEnd() {
+    pServer->webSocket->sendTextMessage("My Round Ends");
+}
+
 void MainWindow::displayEnemyWin() {
     pE->setWindowModality(Qt::ApplicationModal);
     pE->show();
-    myTimer->stop();
-    enemyTimer->stop();
     chessselected = -1;
 }
 
 void MainWindow::displayMeWin() {
     pM->setWindowModality(Qt::ApplicationModal);
     pM->show();
-    myTimer->stop();
-    enemyTimer->stop();
+    pServer->webSocket->sendTextMessage("I WIN!");
     chessselected = -1;
 }
 

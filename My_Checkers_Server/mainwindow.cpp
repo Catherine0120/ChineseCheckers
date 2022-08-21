@@ -6,7 +6,10 @@
 #include <QNetworkInterface>
 #include <qDebug>
 #include <QTime>
+#include <QTimer>
 #include <QtGlobal>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 const quint16 PORT = 8888;
 
@@ -19,6 +22,20 @@ MainWindow::MainWindow(QWidget *parent)
     QString myIP = getLocalIP();
     ui->IPLabel->setText(myIP);
     ui->portLabel->setText(QString::number(PORT));
+
+    earlyTimer = new QTimer(this);
+    lateTimer = new QTimer(this);
+
+    connect(this, SIGNAL(startTiming()), this, SLOT(timeMachineRunning()));
+
+    connect(this, SIGNAL(startEarlyTimer()), this, SLOT(earlyTimerStart()));
+    connect(earlyTimer, SIGNAL(timeout()), this, SLOT(earlyLCDCount()));
+    connect(this, SIGNAL(startLateTimer()), this, SLOT(lateTimerStart()));
+    connect(lateTimer, SIGNAL(timeout()), this, SLOT(lateLCDCount()));
+    connect(this, SIGNAL(earlyLCDupdate()), this, SLOT(earlyClientTimeUpdate()));
+    connect(this, SIGNAL(lateLCDupdate()), this, SLOT(lateClientTimeUpdate()));
+
+    connect(this, SIGNAL(increaseRoundNumber()), this, SLOT(roundLCDUpdate()));
 
     webSocketServer = new QWebSocketServer("My_Checkers_Server", QWebSocketServer::NonSecureMode, this);
     webSocketServer->listen(QHostAddress::Any, PORT);
@@ -56,9 +73,35 @@ void MainWindow::onNewConnection() {
 }
 
 void MainWindow::onTextMessageReceived(QString str) {
-    bool flag = false;
     QWebSocket *socket = (QWebSocket *)sender();
+
     if (str.left(14) == "Ready to Start") {
+        QString tmpColor;
+        switch(str.mid(16).toInt()) {
+            case(0):
+                tmpColor = "RED";
+                break;
+            case(1):
+                tmpColor = "YELLOW";
+                break;
+            case(2):
+                tmpColor = "GREEN";
+                break;
+            case(3):
+                tmpColor = "BLUE";
+                break;
+            case(4):
+                tmpColor = "PURPLE";
+                break;
+            case(5):
+                tmpColor = "PINK";
+                break;
+        }
+
+        ui->textEdit->append(QString("Client[%1:%2]: ")
+                             .arg(socket->localAddress().toString())
+                             .arg(socket->localPort()) + "Ready to Start, BallSelected=" + tmpColor);
+
         if (webSocket_2 == nullptr) {
             assert(webSocket_1 == socket);
             colorClient_1 = str.mid(16).toInt();
@@ -69,6 +112,8 @@ void MainWindow::onTextMessageReceived(QString str) {
 
             if (colorClient_1 != colorClient_2 && colorClient_1 != -1 && colorClient_2 != -1) {
                 gameStarted = true;
+                ui->textEdit->append("GAME STARTED!");
+
                 QTime randtime;
                 randtime = QTime::currentTime();
                 srand(randtime.msec() + randtime.second() * 1000);
@@ -77,56 +122,70 @@ void MainWindow::onTextMessageReceived(QString str) {
 
                 webSocket_1->sendTextMessage(QString("Enemy's BallColor=") + QString::number(colorClient_2));
                 webSocket_2->sendTextMessage(QString("Enemy's BallColor=") + QString::number(colorClient_1));
+
                 if (n == 0) {
+                    goFirst = 1;
                     webSocket_1->sendTextMessage("Start Permitted, you go first");
                     webSocket_2->sendTextMessage("Start Permitted, enemy goes first");
                 }
                 else {
+                    goFirst = 2;
                     assert(n == 1);
                     webSocket_2->sendTextMessage("Start Permitted, you go first");
                     webSocket_1->sendTextMessage("Start Permitted, enemy goes first");
                 }
+                emit startTiming();
             }
             else if (colorClient_1 == colorClient_2) {
                 socket->sendTextMessage("Please select another color");
-                flag = true;
+                ui->textEdit->append("Asking client to select another color...");
             }
+        }
+
+
+    }
+
+    else if (str == "My Round Ends") {
+        if ((goFirst == 1 && socket == webSocket_1)
+                || (goFirst == 2 && socket == webSocket_2)) {
+            earlyTimer->stop();
+            earlyLCD = 0;
+            lateLCD = 20;
+            emit earlyLCDupdate();
+            emit lateLCDupdate();
+            emit startLateTimer();
+        }
+        else {
+            lateTimer->stop();
+            LCDRoundNumber++;
+            emit increaseRoundNumber();
+            lateLCD = 0;
+            earlyLCD = 20;
+            emit earlyLCDupdate();
+            emit lateLCDupdate();
+            emit startEarlyTimer();
         }
     }
 
-    QString tmpColor;
-    switch(str.mid(16).toInt()) {
-        case(0):
-            tmpColor = "RED";
-            break;
-        case(1):
-            tmpColor = "YELLOW";
-            break;
-        case(2):
-            tmpColor = "GREEN";
-            break;
-        case(3):
-            tmpColor = "BLUE";
-            break;
-        case(4):
-            tmpColor = "PURPLE";
-            break;
-        case(5):
-            tmpColor = "PINK";
-            break;
+    else if (str.left(11) == "[Package]: ") {
+        QString message = str.mid(11);
+        ui->textEdit->append("[Package from Client]: " + message);
+
+        if (socket == webSocket_1) {
+            webSocket_2->sendTextMessage(str);
+        }
+        else webSocket_1->sendTextMessage(str);
     }
 
-    ui->textEdit->append(QString("Client[%1:%2]: ")
-                         .arg(socket->localAddress().toString())
-                         .arg(socket->localPort()) + "Ready to Start, BallSelected=" + tmpColor);
-    if (gameStarted) ui->textEdit->append("GAME STARTED!");
-    if (flag) ui->textEdit->append("Asking client to select another color...");
+    else if (str == "I WIN!") {
+        lateTimer->stop();
+        earlyTimer->stop();
+    }
 }
 
 void MainWindow::onDisconnected() {
     QWebSocket *socket = (QWebSocket *)sender();
-    qDebug() << "[1] " << socket << " " << webSocket_1 << " " << webSocket_2;
-    //assert(socket == webSocket_1 || socket == webSocket_2);
+
     ui->textEdit->append(QString("Disconnected to Client[%1:%2]")
                          .arg(socket->localAddress().toString())
                          .arg(socket->localPort()));
@@ -144,8 +203,6 @@ void MainWindow::onDisconnected() {
         gameStarted = false;
     }
 
-
-    qDebug() << "[2] " << socket << " " << webSocket_1 << " " << webSocket_2;
     assert(webSocket_1 == nullptr || webSocket_2 == nullptr);
     if (webSocket_1 != nullptr) {
         webSocket_1->sendTextMessage("Enemy disconnected");
@@ -165,4 +222,89 @@ QString MainWindow::getLocalIP() {
             }
         }
         return "";
+}
+
+
+//time machine running...
+void MainWindow::timeMachineRunning() {
+    ui->textEdit->append("TimeMachineRunning...");
+    earlyLCD = 20;
+    lateLCD = 0;
+
+    QTime dieTime = QTime::currentTime().addMSecs(2000);
+    while( QTime::currentTime() < dieTime )
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+
+    emit earlyLCDupdate();
+    emit lateLCDupdate();
+    emit startEarlyTimer();
+}
+
+void MainWindow::earlyTimerStart() {
+    earlyTimer->start(1000);
+}
+
+void MainWindow::lateTimerStart() {
+    lateTimer->start(1000);
+}
+
+void MainWindow::earlyLCDCount() {
+    if (earlyLCD != 1) {
+        earlyLCD--;
+        emit earlyLCDupdate();
+        emit startEarlyTimer();
+    }
+    else {
+        earlyLCD = 0;
+        lateLCD = 20;
+        emit earlyLCDupdate();
+        emit lateLCDupdate();
+        emit startLateTimer();
+        earlyTimer->stop();
+    }
+}
+
+void MainWindow::lateLCDCount() {
+    if (lateLCD != 1) {
+        lateLCD--;
+        emit lateLCDupdate();
+        emit startLateTimer();
+    }
+    else {
+        lateLCD = 0;
+        earlyLCD = 20;
+        LCDRoundNumber++;
+        emit increaseRoundNumber();
+        emit earlyLCDupdate();
+        emit lateLCDupdate();
+        emit startEarlyTimer();
+        lateTimer->stop();
+    }
+}
+
+void MainWindow::earlyClientTimeUpdate() {
+    if (goFirst == 1) {
+        webSocket_1->sendTextMessage("Set YourTime = " + QString::number(earlyLCD));
+        webSocket_2->sendTextMessage("Set EnemyTime = " + QString::number(earlyLCD));
+    }
+    else {
+        webSocket_2->sendTextMessage("Set YourTime = " + QString::number(earlyLCD));
+        webSocket_1->sendTextMessage("Set EnemyTime = " + QString::number(earlyLCD));
+    }
+}
+
+void MainWindow::lateClientTimeUpdate() {
+    if (goFirst == 1) {
+        webSocket_1->sendTextMessage("Set EnemyTime = " + QString::number(lateLCD));
+        webSocket_2->sendTextMessage("Set YourTime = " + QString::number(lateLCD));
+    }
+    else {
+        webSocket_2->sendTextMessage("Set EnemyTime = " + QString::number(lateLCD));
+        webSocket_1->sendTextMessage("Set YourTime = " + QString::number(lateLCD));
+    }
+}
+
+void MainWindow::roundLCDUpdate() {
+    webSocket_1->sendTextMessage("Set Round = " + QString::number(LCDRoundNumber));
+    webSocket_2->sendTextMessage("Set Round = " + QString::number(LCDRoundNumber));
 }
