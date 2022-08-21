@@ -9,7 +9,7 @@
 2. 其它图形界面（待完善）：
     help,score
 
-##### 待实现：联网对战
-1. 已实现部分：ConnectToServer, StartGame
+##### 基本实现：联网对战
+1. 已实现部分：ConnectToServer, StartGame，走棋，判断胜负
 
-2. 待实现部分：走棋，判断胜负等
+2. 待实现部分：插件部分（admit defeat，20/25/28回合判负，pause等）
