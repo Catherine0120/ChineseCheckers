@@ -105,6 +105,10 @@ void connectserver::outputMessageReceived(QString str) {
         emit EnemyAdmitDefeat();
     }
 
+    else if (str == "Enemy loses, YOU WIN!") {
+        emit IWIN();
+    }
+
     else if (str == "Enemy Pause") {
         ui->textEdit->append("Enemy Pause...Please wait...");
         emit enemyPause();
@@ -118,6 +122,7 @@ void connectserver::outputMessageReceived(QString str) {
     else if (str == "3 RunOutOfTime!") {
         emit runOutOfTime();
     }
+
     else if (str == "Enemy 3 RunOutOfTime!") {
         emit enemyRunOutOfTime();
     }

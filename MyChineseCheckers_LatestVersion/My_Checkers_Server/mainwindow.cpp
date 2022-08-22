@@ -194,8 +194,8 @@ void MainWindow::onTextMessageReceived(QString str) {
         ui->textEdit->append("[Client]: " + str);
         lateTimer->stop();
         earlyTimer->stop();
-        if (socket == webSocket_1) webSocket_2->sendTextMessage("Enemy admit defeat. You win!");
-        else webSocket_1->sendTextMessage("Enemy admit defeat. You win!");
+        if (socket == webSocket_1) webSocket_2->sendTextMessage("Enemy loses, YOU WIN!");
+        else webSocket_1->sendTextMessage("Enemy loses, YOU WIN!");
         ui->textEdit->append("Game Ended");
     }
 
@@ -224,6 +224,10 @@ void MainWindow::onTextMessageReceived(QString str) {
 
 void MainWindow::onDisconnected() {
     QWebSocket *socket = (QWebSocket *)sender();
+
+    earlyClientRunTime = 0;
+    lateClientRunTime = 0;
+    LCDRoundNumber = 1;
 
     ui->textEdit->append(QString("Disconnected to Client[%1:%2]")
                          .arg(socket->localAddress().toString())

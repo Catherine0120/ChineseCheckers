@@ -141,6 +141,8 @@ private slots:
 
     void displayRunTimeIWin();
 
+    void displayIWin();
+
 signals:
     void mouseMove(QMouseEvent *event);
 

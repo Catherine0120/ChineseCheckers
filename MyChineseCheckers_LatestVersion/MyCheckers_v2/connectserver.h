@@ -60,6 +60,8 @@ signals:
 
     void enemyRunOutOfTime();
 
+    void IWIN();
+
 private:
     Ui::connectserver *ui;
 };

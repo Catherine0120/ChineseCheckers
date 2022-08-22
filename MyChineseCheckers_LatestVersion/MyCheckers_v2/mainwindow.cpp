@@ -81,6 +81,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(pServer, SIGNAL(enemyStopPause()), this, SLOT(onEnemyStopPause()));
     connect(pServer, SIGNAL(runOutOfTime()), this, SLOT(displayRunTimeEnemyWin()));
     connect(pServer, SIGNAL(enemyRunOutOfTime()), this, SLOT(displayRunTimeIWin()));
+    connect(pServer, SIGNAL(IWIN()), this, SLOT(displayIWin()));
 
     connect(this, SIGNAL(endMyRound()), this, SLOT(onMyRoundEnd()));
     connect(this, SIGNAL(packageReady()), this, SLOT(sendPackageToServer()));
@@ -229,7 +230,8 @@ void MainWindow::mouseMoveEvent(QMouseEvent * event) {
     }
     else if (num != -1 && chessesplayed[num].side == ME
              && (chessselected == num || chessselected == -1)
-             && ui->lcdNumberYour->value() > 0) {
+             && ui->lcdNumberYour->value() > 0
+             && !isPause) {
         this->setCursor(Qt::PointingHandCursor);
     }
     else if(num == -1 || chessesplayed[num].side == ME) {
@@ -253,7 +255,8 @@ void MainWindow::mousePressEvent(QMouseEvent * event) {
     //我的回合
     if (num != -1 && chessesplayed[num].side == ME
             && (chessselected == num || chessselected == -1)
-            && ui->lcdNumberYour->value() > 0) {
+            && ui->lcdNumberYour->value() > 0
+            && !isPause) {
         this->setCursor(Qt::PointingHandCursor);
         chessselected = num;
         chessbeingmoved = &chessesplayed[num];
@@ -928,3 +931,8 @@ bool MainWindow::countEnemyChessMyCamp() {
     return true;
 }
 
+void MainWindow::displayIWin() {
+    pM->setWindowModality(Qt::ApplicationModal);
+    pM->show();
+    chessselected = -1;
+}
